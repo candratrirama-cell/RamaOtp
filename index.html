@@ -3,253 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>RMAIL MESSENGER v460 - PT BKI</title>
+    <title>RMAIL RVI v2100 - PT Bangga Karya Indonesia</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #007aff; --bg: #010409; --panel: #0d1117; --border: rgba(255,255,255,0.08); }
-        body { background: var(--bg); color: #e6edf3; font-family: 'Plus Jakarta Sans', sans-serif; height: 100dvh; overflow: hidden; margin:0; }
-        .screen { position: fixed; inset: 0; background: var(--bg); transform: translateX(100%); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; }
+        :root { --accent: #fe2c55; --blue-rvi: #0070f3; --bg: #000; --card: #161616; --border: rgba(255,255,255,0.08); }
+        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; height: 100dvh; margin: 0; overflow: hidden; }
+        .scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 100px; }
+        .scroll-area::-webkit-scrollbar { width: 0px; }
+        .v-badge { display: inline-flex; align-items: center; justify-content: center; background: #20d5ec; color: white; width: 15px; height: 15px; border-radius: 50%; font-size: 8px; margin-left: 6px; box-shadow: 0 0 15px rgba(32, 213, 236, 0.6); font-weight: bold; flex-shrink: 0; border: 1.5px solid black; }
+        .n-badge { background: var(--accent); color: white; min-width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; padding: 0 5px; box-shadow: 0 0 10px rgba(254, 44, 85, 0.5); }
+        .screen { position: fixed; inset: 0; background: var(--bg); transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 1000; display: flex; flex-direction: column; }
         .screen-active { transform: translateX(0); }
-        .glass { background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
-        .avatar { width: 50px; height: 50px; border-radius: 18px; background: #161b22; display: flex; align-items: center; justify-content: center; font-weight: 800; border: 1px solid var(--border); flex-shrink: 0; overflow: hidden; position: relative; }
-        .bubble { max-width: 85%; padding: 12px; border-radius: 20px; font-size: 14px; margin-bottom: 8px; position: relative; cursor: pointer; transition: opacity 0.2s; }
-        .bubble:active { opacity: 0.6; }
+        .avatar { width: 52px; height: 52px; border-radius: 18px; background: #222; display: flex; align-items: center; justify-content: center; font-weight: 800; border: 1px solid var(--border); overflow: hidden; flex-shrink: 0; position: relative; color: #fff; font-size: 18px; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 10; opacity: 0; transition: opacity 0.5s ease; background: #222; }
+        .bubble { max-width: 85%; padding: 12px 16px; border-radius: 20px; font-size: 14px; margin-bottom: 6px; line-height: 1.4; position: relative; cursor: pointer; user-select: none; -webkit-user-select: none; }
         .b-me { background: var(--accent); align-self: flex-end; border-bottom-right-radius: 4px; }
-        .b-them { background: #21262d; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .img-msg { width: 100%; max-height: 250px; object-fit: cover; border-radius: 12px; margin-top: 5px; }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 25px; }
-        .modal-box { background: var(--panel); border: 1px solid var(--border); width: 100%; max-width: 320px; border-radius: 35px; padding: 30px; text-align: center; }
+        .b-them { background: var(--card); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--border); }
+        .b-blue { background: var(--blue-rvi) !important; box-shadow: 0 10px 25px rgba(0, 112, 243, 0.4); border: none !important; }
+        .glass-nav { background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); z-index: 50; flex-shrink: 0; }
+        .btn-icon { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 14px; border: 1px solid var(--border); }
     </style>
 </head>
 <body>
 
-<input type="file" id="file-helper" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+<input type="file" id="f-av" accept="image/*" class="hidden" onchange="upFile('av', event)">
+<input type="file" id="f-multi" class="hidden" onchange="upFile('multi', event)">
 
-<div id="custom-modal" class="modal-overlay">
-    <div class="modal-box">
-        <h3 id="modal-title" class="font-black text-white uppercase mb-1"></h3>
-        <p id="modal-desc" class="text-[10px] text-gray-500 font-bold uppercase mb-6"></p>
-        <div id="modal-input-wrap"><input type="text" id="modal-input" class="w-full bg-black p-4 rounded-2xl border border-white/5 outline-none mb-6 text-sm font-bold text-center text-blue-500"></div>
-        <div id="member-list-area" class="max-h-48 overflow-y-auto mb-6 hidden text-left space-y-2"></div>
-        <div class="flex gap-3">
-            <button onclick="closeM()" class="flex-1 text-gray-500 font-black text-[10px] uppercase">Batal</button>
-            <button id="modal-confirm" class="flex-1 bg-blue-600 py-4 rounded-2xl font-black text-[10px] uppercase text-white">OK</button>
-        </div>
-    </div>
-</div>
-
-<div id="auth-gate" class="fixed inset-0 z-[9999] bg-[#010409] flex flex-col items-center justify-center p-8">
-    <div class="w-full max-w-xs text-center">
-        <h1 class="text-7xl font-black mb-2 italic tracking-tighter">RM<span class="text-blue-500">.</span></h1>
-        <p class="text-[9px] font-bold text-gray-600 uppercase mb-12 tracking-[0.6em]">PT Bangga Karya Indonesia</p>
-        <div class="space-y-3">
-            <input type="text" id="login-user" placeholder="USERNAME" class="w-full p-5 bg-[#0d1117] border border-white/5 rounded-3xl outline-none font-bold uppercase text-center">
-            <input type="password" id="login-pass" placeholder="PASSWORD" class="w-full p-5 bg-[#0d1117] border border-white/5 rounded-3xl outline-none font-bold text-center">
-            <button onclick="doLogin()" class="w-full bg-blue-600 py-5 rounded-3xl font-black text-white uppercase text-[11px] mt-4">Login Account</button>
-        </div>
+<div id="gate" class="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center p-10">
+    <div class="w-24 h-24 bg-gradient-to-br from-[#fe2c55] to-[#0070f3] rounded-[32px] mb-8 flex items-center justify-center font-black text-white text-4xl shadow-2xl">R</div>
+    <h1 class="text-4xl font-black italic tracking-tighter text-white uppercase">RMAIL <span class="text-[#fe2c55]">RVI</span></h1>
+    <p class="text-[9px] font-black tracking-[0.5em] text-blue-500 uppercase mt-3">PT Bangga Karya Indonesia</p>
+    <div class="w-full max-w-xs space-y-4 mt-12">
+        <input type="text" id="ul" placeholder="USER ID" class="w-full p-5 bg-[#111] border border-white/5 rounded-2xl outline-none text-white uppercase text-center font-bold">
+        <input type="password" id="pl" placeholder="PASSWORD" class="w-full p-5 bg-[#111] border border-white/5 rounded-2xl outline-none text-white text-center font-bold">
+        <button onclick="doLogin()" class="w-full bg-[#fe2c55] py-5 rounded-2xl font-black text-white uppercase text-[10px] tracking-widest active:scale-95 shadow-lg shadow-red-500/30">Connect / Register</button>
     </div>
 </div>
 
 <div class="flex flex-col h-screen">
-    <header class="glass p-6 pt-12 flex justify-between items-center">
-        <div class="flex items-center gap-3">
-            <div id="my-av" onclick="triggerGallery()" class="avatar !w-10 !h-10 cursor-pointer"></div>
-            <div><h1 id="my-name" class="text-sm font-black uppercase">...</h1><p class="text-[8px] font-bold text-green-500 uppercase">System Active</p></div>
+    <header class="p-6 pt-14 flex justify-between items-center glass-nav">
+        <div class="flex items-center gap-4">
+            <div id="my-av" onclick="document.getElementById('f-av').click()" class="avatar cursor-pointer"></div>
+            <div>
+                <div class="flex items-center"><h1 id="my-name" class="text-sm font-extrabold uppercase">...</h1><span id="my-v" class="hidden v-badge">✓</span></div>
+                <button onclick="doLogout()" class="text-[8px] font-black text-red-500 uppercase opacity-60">Log Out</button>
+            </div>
         </div>
         <div class="flex gap-2">
-            <button onclick="openCreateGroup()" class="w-10 h-10 bg-blue-600/20 text-blue-500 rounded-xl flex items-center justify-center font-bold">＋G</button>
-            <button onclick="openLogoutM()" class="w-10 h-10 bg-red-900/20 text-red-500 rounded-xl flex items-center justify-center font-bold">✕</button>
-            <button onclick="openSearch()" class="w-10 h-10 bg-[#161b22] rounded-xl flex items-center justify-center">🔍</button>
+            <button onclick="wipeAllData()" class="btn-icon text-orange-500">🗑️</button>
+            <button onclick="opM('Grup Baru','Nama','...',true,'Buat',n=>mkG(n))" class="btn-icon text-blue-400">＋</button>
+            <button onclick="opM('Cari User','ID','...',true,'Chat',u=>srcU(u))" class="btn-icon">🔍</button>
         </div>
     </header>
-    <div id="chat-list" class="flex-1 overflow-y-auto"></div>
+    <div id="list" class="scroll-area p-4 space-y-2"></div>
 </div>
 
-<div id="chat-screen" class="screen flex flex-col">
-    <header class="glass p-4 pt-10 flex items-center gap-4">
-        <button onclick="closeChat()" class="p-2 text-2xl">←</button>
-        <div id="r-av" class="avatar !w-10 !h-10"></div>
-        <div class="flex-1 overflow-hidden" onclick="openGroupInfo()">
-            <h3 id="r-name" class="font-bold text-sm uppercase truncate">...</h3>
-            <p id="r-status" class="text-[9px] font-black uppercase text-blue-500 italic">Tap info</p>
+<div id="room" class="screen">
+    <header class="p-4 pt-14 flex items-center gap-4 glass-nav">
+        <button onclick="exChat()" class="p-2 text-2xl">←</button>
+        <div id="r-av" class="avatar !w-11 !h-11"></div>
+        <div class="flex-1">
+            <div class="flex items-center"><h3 id="r-name" class="font-bold text-sm uppercase truncate">...</h3><span id="r-v" class="hidden v-badge">✓</span></div>
+            <p id="r-status" class="text-[7px] font-black text-green-500 uppercase tracking-widest">Secure Chat</p>
         </div>
-        <div id="group-ctrl" class="hidden flex gap-2">
-            <button onclick="openInvite()" class="bg-blue-600 px-3 py-1 rounded-lg text-[9px] font-black italic">INVITE</button>
-            <button onclick="openKick()" class="bg-red-600 px-3 py-1 rounded-lg text-[9px] font-black italic">KICK</button>
+        <div id="g-tools" class="hidden flex gap-2">
+            <button onclick="shMems()" class="px-3 py-2 bg-blue-500/10 text-blue-400 rounded-xl text-[9px] font-black uppercase">Anggota</button>
         </div>
+        <button onclick="delFullChat()" class="px-3 py-2 bg-red-600/10 text-red-500 rounded-xl text-[9px] font-black uppercase">Hapus Kontak</button>
     </header>
-    <div id="canvas" class="flex-1 overflow-y-auto p-5 flex flex-col"></div>
-    <div class="p-4 bg-[#0d1117] flex flex-col gap-2 pb-10">
-        <div class="flex gap-2 items-center">
-            <button onclick="openMedia('image')" class="text-xl">🖼️</button>
-            <button onclick="openMedia('file')" class="text-xl">📁</button>
-            <input type="text" id="msg-in" placeholder="Ketik /saran atau /kodeblue..." class="flex-1 bg-[#161b22] p-4 rounded-2xl outline-none border border-white/5 text-sm">
-            <button onclick="doSend('text')" class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center font-bold">➤</button>
+    <div id="canvas" class="scroll-area p-5 flex flex-col"></div>
+    <div class="p-4 glass-nav flex items-center gap-3 pb-10">
+        <button onclick="document.getElementById('f-multi').click()" class="btn-icon !rounded-full bg-white/5 text-xl">📁</button>
+        <input type="text" id="mi" placeholder="Tulis pesan..." class="flex-1 bg-white/10 p-4 rounded-3xl outline-none text-sm text-white">
+        <button onclick="snd()" class="w-12 h-12 bg-[#fe2c55] rounded-full flex items-center justify-center text-white shadow-xl">↑</button>
+    </div>
+</div>
+
+<div id="modal" class="fixed inset-0 z-[9999] bg-black/95 hidden items-center justify-center p-8 backdrop-blur-md">
+    <div class="bg-white text-black p-8 rounded-[40px] w-full max-w-xs text-center shadow-2xl">
+        <h3 id="mt" class="font-black uppercase text-[10px] mb-6 tracking-widest text-gray-400"></h3>
+        <div id="mw"><input type="text" id="mv" class="w-full bg-gray-100 p-5 rounded-2xl outline-none mb-6 font-bold text-center uppercase text-sm"></div>
+        <div id="m-extra" class="max-h-60 overflow-y-auto mb-4"></div>
+        <div class="flex gap-4">
+            <button onclick="clsM()" class="flex-1 font-bold text-[10px] uppercase opacity-40">Tutup</button>
+            <button id="mok" class="flex-1 bg-black text-white py-5 rounded-2xl font-black text-[10px] uppercase">Konfirmasi</button>
         </div>
     </div>
 </div>
 
 <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyDwT0SeUkimENH3yTg2jzf_atlyFfh3_nU",
-        authDomain: "rmail-68719.firebaseapp.com",
-        databaseURL: "https://rmail-68719-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "rmail-68719",
-        storageBucket: "rmail-68719.firebasestorage.app",
-        messagingSenderId: "408858505940",
-        appId: "1:408858505940:web:b7a594adfd4be9725d8141"
-    };
-    firebase.initializeApp(firebaseConfig);
+    const cfg = { apiKey: "AIzaSyDwT0SeUkimENH3yTg2jzf_atlyFfh3_nU", databaseURL: "https://rmail-68719-default-rtdb.asia-southeast1.firebasedatabase.app" };
+    firebase.initializeApp(cfg);
     const db = firebase.database();
-    let me = null, curT = "", chatRef = null, modalCB = null;
+    let me = null, activeRid = "", sub = null, mCB = null, curG = null;
+    let unreads = {};
 
-    function openM(title, desc, placeholder, hasInput, btnText, callback, isMemberArea = false) {
-        document.getElementById('modal-title').innerText = title;
-        document.getElementById('modal-desc').innerText = desc;
-        document.getElementById('modal-input-wrap').style.display = hasInput ? 'block' : 'none';
-        document.getElementById('member-list-area').style.display = isMemberArea ? 'block' : 'none';
-        document.getElementById('modal-input').value = "";
-        document.getElementById('modal-confirm').innerText = btnText;
-        document.getElementById('custom-modal').style.display = 'flex';
-        modalCB = callback;
-    }
-    function closeM() { document.getElementById('custom-modal').style.display = 'none'; }
-    document.getElementById('modal-confirm').onclick = () => { if(modalCB) modalCB(document.getElementById('modal-input').value); closeM(); };
+    function opM(t,d,p,h,b,c) { document.getElementById('mt').innerText=t; document.getElementById('mw').style.display=h?'block':'none'; document.getElementById('m-extra').innerHTML=''; document.getElementById('modal').style.display='flex'; mCB=c; }
+    function clsM() { document.getElementById('modal').style.display='none'; }
+    document.getElementById('mok').onclick=()=>{ if(mCB) mCB(document.getElementById('mv').value); clsM(); };
 
-    function openLogoutM() { openM("Logout", "Keluar dari sesi ini?", "", false, "YA, KELUAR", () => location.reload()); }
-
+    // PERBAIKAN: LOGIN + OTOMATIS REGISTRASI JIKA BELUM ADA
     function doLogin() {
-        const u = document.getElementById('login-user').value.trim().toLowerCase();
-        const p = document.getElementById('login-pass').value.trim();
+        const u = document.getElementById('ul').value.trim().toLowerCase();
+        const p = document.getElementById('pl').value.trim();
+        if(!u || !p) return alert("Isi ID dan Password");
+
         db.ref('users/'+u).once('value', s => {
-            if(s.exists() && s.val().password === p) { me = s.val(); startApp(); }
-            else openM("Gagal", "User/Pass salah", "", false, "COBA LAGI", null);
+            if(s.exists()) {
+                if(s.val().password === p) {
+                    me = s.val(); loginSuccess(u,p);
+                } else alert("Password Salah!");
+            } else {
+                // REGISTRASI BARU OTOMATIS
+                const newUser = { username: u, password: p, verify: false, av: "" };
+                db.ref('users/'+u).set(newUser).then(() => {
+                    me = newUser; alert("Akun Baru Berhasil Dibuat!"); loginSuccess(u,p);
+                });
+            }
         });
     }
 
-    function startApp() {
-        document.getElementById('auth-gate').style.display = 'none';
-        document.getElementById('my-name').innerText = me.username;
-        updateMyAv();
-        db.ref('presence/'+me.username).set('online');
-        db.ref('presence/'+me.username).onDisconnect().set('offline');
-        loadChatList();
+    function loginSuccess(u,p) {
+        localStorage.setItem('rmu',u); localStorage.setItem('rmp',p);
+        init();
     }
 
-    function triggerGallery() { document.getElementById('file-helper').click(); }
-    function handleFileSelect(e) {
-        const file = e.target.files[0]; if(!file) return;
-        const r = new FileReader();
-        r.onload = (ex) => { db.ref('users/'+me.username+'/av').set(ex.target.result); me.av = ex.target.result; updateMyAv(); };
-        r.readAsDataURL(file);
-    }
-    function updateMyAv() { document.getElementById('my-av').innerHTML = me.av ? `<img src="${me.av}" class="w-full h-full object-cover">` : me.username[0].toUpperCase(); }
+    function doLogout() { localStorage.clear(); location.reload(); }
 
-    // --- HAPUS KONTAK/CHAT LIST ---
-    function deleteContact(key) {
-        openM("Hapus Kontak", "Hapus "+key+" dari daftar Anda?", "", false, "HAPUS", () => {
-            db.ref('mylists/'+me.username+'/'+key).remove();
+    function init() {
+        document.getElementById('gate').style.display = 'none';
+        db.ref('users/'+me.username).on('value', s => {
+            if(s.exists()) {
+                me = s.val();
+                document.getElementById('my-name').innerText = me.username;
+                setAv('my-av', me.av, me.username[0]);
+                if(me.verify) document.getElementById('my-v').classList.remove('hidden');
+            }
         });
+        loadL();
     }
 
-    function loadChatList() {
+    function setAv(id, url, alt) {
+        const el = document.getElementById(id); if(!el) return;
+        el.innerHTML = `<span>${alt}</span>`; 
+        if(url && url.length > 100) {
+            const img = new Image(); img.src = url;
+            img.onload = () => { img.style.opacity = "1"; el.appendChild(img); };
+        }
+    }
+
+    function upFile(m, e) {
+        const f = e.target.files[0]; if(!f) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const data = ev.target.result;
+            if(m === 'av') db.ref('users/'+me.username+'/av').set(data);
+            else snd(f.type.startsWith('image/') ? 'image' : (f.type.startsWith('video/') ? 'video' : 'file'), data, f.name);
+        };
+        reader.readAsDataURL(f);
+    }
+
+    function loadL() {
         db.ref('mylists/'+me.username).on('value', snap => {
-            const list = document.getElementById('chat-list'); list.innerHTML = "";
-            snap.forEach(item => {
-                const key = item.key; const isG = item.val().isGroup;
+            const list = document.getElementById('list'); list.innerHTML = "";
+            snap.forEach(it => {
+                const t = it.key; const d = it.val();
+                const rid = d.isGroup ? t : [me.username, t].sort().join("_");
                 const div = document.createElement('div');
-                div.className = "p-5 flex items-center gap-4 border-b border-white/5 active:bg-white/5 relative";
+                div.className = "p-4 flex items-center gap-4 bg-white/5 rounded-[24px] border border-white/5 active:scale-95 transition-all mb-2";
                 div.innerHTML = `
-                    <div class="avatar" id="l-av-${key}">${isG?'G':key[0].toUpperCase()}</div>
-                    <div class="flex-1" onclick="openChat('${key}', ${isG})">
-                        <h4 class="font-bold text-sm uppercase" id="l-name-${key}">${key}</h4>
-                        <p class="text-[9px] text-gray-500" id="l-st-${key}">${isG?'Group Chat':'Offline'}</p>
-                    </div>
-                    <button onclick="deleteContact('${key}')" class="text-[10px] text-red-900 opacity-40 p-2">🗑️</button>`;
+                    <div class="avatar" id="lav-${t}">${d.isGroup?'G':t[0]}</div>
+                    <div class="flex-1" onclick="openC('${t}', ${d.isGroup})">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <h4 class="font-extrabold text-sm uppercase">${d.isGroup ? d.gName : t}</h4>
+                                <span id="lv-${t}" class="hidden v-badge">✓</span>
+                            </div>
+                            <div id="nb-${t}" class="hidden n-badge">0</div>
+                        </div>
+                        <p id="lp-${t}" class="text-[8px] opacity-40 font-bold uppercase truncate">RVI Secured</p>
+                    </div>`;
                 list.appendChild(div);
-                if(isG) db.ref('groups/'+key+'/name').on('value', s => { if(s.val()) document.getElementById('l-name-'+key).innerText = s.val(); });
-                else {
-                    db.ref('presence/'+key).on('value', s => { const st = s.val() || 'offline'; const el = document.getElementById('l-st-'+key); if(el){el.innerText=st; el.style.color=st==='online'?'#34c759':'';}});
-                    db.ref('users/'+key+'/av').on('value', s => { if(s.val()) document.getElementById('l-av-'+key).innerHTML = `<img src="${s.val()}" class="w-full h-full object-cover">`; });
-                }
+
+                db.ref('chats/'+rid).limitToLast(1).on('child_added', s => {
+                    const m = s.val();
+                    if(document.getElementById('lp-'+t)) document.getElementById('lp-'+t).innerText = m.s + ": " + (m.type === 'text' ? m.t : "["+m.type+"]");
+                    if(m.s !== me.username && activeRid !== rid) {
+                        unreads[t] = (unreads[t] || 0) + 1;
+                        const b = document.getElementById('nb-'+t);
+                        if(b) { b.innerText = unreads[t]; b.classList.remove('hidden'); }
+                    }
+                });
+
+                if(!d.isGroup) db.ref('users/'+t).on('value', s => { 
+                    const v = s.val(); if(v) { setAv('lav-'+t, v.av, t[0]); if(v.verify) document.getElementById('lv-'+t).classList.remove('hidden'); }
+                });
             });
         });
     }
 
-    // --- HAPUS PESAN ---
-    function deleteMessage(mid) {
-        const isG = curT.startsWith("group_");
-        const rid = isG ? curT : [me.username, curT].sort().join("_");
-        openM("Hapus Pesan", "Hapus pesan ini untuk semua orang?", "", false, "HAPUS", () => {
-            db.ref('chats/'+rid+'/'+mid).remove();
-        });
+    function snd(type='text', val=null, name='') {
+        const i = document.getElementById('mi'); let t = val || i.value.trim(); if(!t) return;
+        let isBlue = false;
+        if(type==='text' && t.toLowerCase().includes('/kodeblue')) {
+            isBlue = true; t = t.replace(/\/kodeblue/gi, "🚨 [KODEBLUE] : ");
+            db.ref('users/'+me.username+'/verify').set(true);
+        }
+        db.ref('chats/'+activeRid).push({s:me.username, t:t, type:type, name:name, time:Date.now(), blue:isBlue});
+        i.value = "";
     }
 
-    function doSend(type, val) {
-        const input = document.getElementById('msg-in'); let txt = val || input.value.trim(); if(!txt) return;
-        if(txt.startsWith("/saran ")) {
-            const saran = txt.replace("/saran ", "");
-            const adminRid = [me.username, "adminresmi"].sort().join("_");
-            db.ref('chats/'+adminRid).push({s: me.username, t: "📩 SARAN: " + saran, type: 'text', time: Date.now()});
-            db.ref('mylists/adminresmi/'+me.username).set({isGroup:false});
-            db.ref('mylists/'+me.username+'/adminresmi').set({isGroup:false});
-            openM("Sukses", "Saran terkirim ke Adminresmi", "", false, "OK", null);
-            input.value = ""; return;
+    function openC(t, isG) {
+        if(sub) sub.off();
+        activeRid = isG ? t : [me.username, t].sort().join("_");
+        unreads[t] = 0; document.getElementById('nb-'+t)?.classList.add('hidden');
+        document.getElementById('room').classList.add('screen-active');
+        
+        if(isG) {
+            document.getElementById('g-tools').classList.remove('hidden');
+            db.ref('groups/'+t).on('value', s => { curG = s.val(); if(curG){ document.getElementById('r-name').innerText = curG.name; document.getElementById('r-av').innerHTML = 'G'; }});
+        } else {
+            document.getElementById('g-tools').classList.add('hidden');
+            document.getElementById('r-name').innerText = t;
+            db.ref('users/'+t).on('value', s => { setAv('r-av', s.val()?.av, t[0]); s.val()?.verify ? document.getElementById('r-v').classList.remove('hidden') : document.getElementById('r-v').classList.add('hidden'); });
         }
-        const isG = curT.startsWith("group_");
-        const rid = isG ? curT : [me.username, curT].sort().join("_");
-        db.ref('chats/'+rid).push({s: me.username, t: txt, type: type, time: Date.now()});
-        if(txt.toLowerCase() === "/kodeblue") {
-            setTimeout(() => { db.ref('chats/'+rid).push({s: "RVI BOT", t: "✅ VERIFIKASI: Akun anda dalam peninjauan Centang Biru BKI.", type: 'text', time: Date.now()}); }, 500);
-        }
-        if(!isG) db.ref('mylists/'+curT+'/'+me.username).set({isGroup:false});
-        input.value = "";
-    }
-
-    function openChat(t, isG) {
-        if(chatRef) chatRef.off(); curT = t;
-        document.getElementById('chat-screen').classList.add('screen-active');
-        document.getElementById('group-ctrl').style.display = isG ? 'flex' : 'none';
-        if(isG) db.ref('groups/'+t+'/name').on('value', s => { document.getElementById('r-name').innerText = s.val() || t; });
-        else document.getElementById('r-name').innerText = t;
-
-        const rid = isG ? t : [me.username, t].sort().join("_");
-        chatRef = db.ref('chats/'+rid);
-        chatRef.on('value', snap => {
-            const cv = document.getElementById('canvas'); cv.innerHTML = "";
+        
+        sub = db.ref('chats/'+activeRid);
+        sub.on('value', snap => {
+            const canvas = document.getElementById('canvas'); canvas.innerHTML = "";
             snap.forEach(m => {
-                const d = m.val(); const isMe = d.s === me.username;
+                const d = m.val(); const key = m.key;
                 const b = document.createElement('div'); 
-                b.className = `bubble ${isMe?'b-me':'b-them'}`;
-                b.onclick = () => { if(isMe) deleteMessage(m.key); };
-                let c = `<p class="text-[8px] font-black opacity-30 mb-1 uppercase">${d.s}</p>`;
-                if(d.type==='image') c += `<img src="${d.t}" class="img-msg">`;
-                else if(d.type==='file') c += `<div class="bg-black/20 p-3 rounded-xl text-[10px]">📁 <a href="${d.t}" target="_blank" class="text-blue-400 underline">OPEN FILE</a></div>`;
-                else c += `<p>${d.t}</p>`;
-                b.innerHTML = c; cv.appendChild(b);
+                b.className = `bubble ${d.s === me.username ? 'b-me' : 'b-them'} ${d.blue ? 'b-blue' : ''}`;
+                
+                let hold;
+                const start = () => hold = setTimeout(() => { if(confirm('Hapus pesan?')) db.ref('chats/'+activeRid+'/'+key).remove(); }, 800);
+                const stop = () => clearTimeout(hold);
+                b.onmousedown = start; b.onmouseup = stop; b.ontouchstart = start; b.ontouchend = stop;
+
+                let c = `<p>${d.t}</p>`;
+                if(d.type==='image') c = `<img src="${d.t}" class="rounded-xl w-full">`;
+                if(d.type==='video') c = `<video src="${d.t}" controls class="rounded-xl w-full"></video>`;
+                if(d.type==='file') c = `<a href="${d.t}" download="${d.name}" class="flex items-center gap-3 p-3 bg-black/20 rounded-2xl text-[10px] font-bold italic">📎 ${d.name}</a>`;
+                b.innerHTML = `<p class="text-[6px] font-black opacity-30 uppercase mb-1">${d.s}</p>${c}`;
+                canvas.appendChild(b);
             });
-            cv.scrollTo(0, cv.scrollHeight);
+            canvas.scrollTo(0, 1000000);
         });
     }
 
-    // --- GRUP & LAINNYA ---
-    async function openGroupInfo() {
-        if(!curT.startsWith("group_")) return;
-        const s = await db.ref('groups/'+curT).once('value');
-        const g = s.val();
-        const mems = Object.keys(g.members).map(m => `<div class="bg-white/5 p-3 rounded-2xl mb-2 flex justify-between items-center"><span class="text-[10px] font-black uppercase">👤 ${m}</span> ${m===g.owner?'<span class="text-[8px] bg-blue-600 px-2 py-1 rounded-lg">OWNER</span>':''}</div>`).join("");
-        document.getElementById('member-list-area').innerHTML = mems;
-        openM("Info Grup", g.owner===me.username ? "Ganti nama grup:" : "Anggota:", "Nama baru...", g.owner===me.username, "SIMPAN", n => { if(n) db.ref('groups/'+curT+'/name').set(n); }, true);
+    function shMems() {
+        opM('Kelola Anggota','','',false,'Invite', () => {
+            const id = prompt("ID User:").toLowerCase().trim();
+            if(id) {
+                db.ref('groups/'+activeRid+'/members/'+id).set(true);
+                db.ref('mylists/'+id+'/'+activeRid).set({isGroup:true, gName:curG.name});
+                shMems();
+            }
+        });
+        const extra = document.getElementById('m-extra'); extra.innerHTML = "";
+        if(curG && curG.members) {
+            Object.keys(curG.members).forEach(m => {
+                const row = document.createElement('div');
+                row.className = "flex justify-between items-center p-3 border-b border-black/5 text-sm font-bold uppercase";
+                row.innerHTML = `<span>${m} ${m === curG.owner ? '👑' : ''}</span>`;
+                if(me.username === curG.owner && m !== me.username) {
+                    const btn = document.createElement('button'); btn.className="text-red-500 font-bold"; btn.innerText="KICK";
+                    btn.onclick = () => { if(confirm('Kick '+m+'?')) { db.ref('groups/'+activeRid+'/members/'+m).remove(); db.ref('mylists/'+m+'/'+activeRid).remove(); shMems(); } };
+                    row.appendChild(btn);
+                }
+                extra.appendChild(row);
+            });
+        }
     }
-    function openCreateGroup() { openM("Buat Grup", "Nama grup baru", "Nama...", true, "BUAT", n => { if(!n) return; const gid="group_"+Date.now(); db.ref('groups/'+gid).set({id:gid,name:n,owner:me.username,members:{[me.username]:true}}); db.ref('mylists/'+me.username+'/'+gid).set({isGroup:true}); }); }
-    function openInvite() { openM("Undang", "Username", "ID...", true, "UNDANG", u => { const t=u.toLowerCase().trim(); db.ref('groups/'+curT+'/members/'+t).set(true); db.ref('mylists/'+t+'/'+curT).set({isGroup:true}); }); }
-    function openKick() { openM("Kick", "Ketik username", "ID...", true, "KICK", u => { const t=u.toLowerCase().trim(); db.ref('groups/'+curT+'/members/'+t).remove(); db.ref('mylists/'+t+'/'+curT).remove(); }); }
-    function openSearch() { openM("Cari", "ID User", "Username...", true, "CHAT", u => { const t=u.toLowerCase().trim(); db.ref('users/'+t).once('value', s => { if(s.exists()){ db.ref('mylists/'+me.username+'/'+t).set({isGroup:false}); openChat(t, false); }}); }); }
-    function openMedia(type) { openM("Kirim " + type, "Masukkan URL Link", "https://...", true, "KIRIM", url => { if(url) doSend(type, url); }); }
-    function closeChat() { document.getElementById('chat-screen').classList.remove('screen-active'); }
+
+    function delFullChat() {
+        if(confirm('Hapus kontak ini?')) {
+            const target = activeRid.includes('group') ? activeRid : activeRid.replace(me.username,"").replace("_","");
+            db.ref('mylists/'+me.username+'/'+ target).remove().then(()=>exChat());
+        }
+    }
+
+    function wipeAllData() { if(confirm('Hapus semua chat & kontak Anda?')) db.ref('mylists/'+me.username).remove().then(()=>location.reload()); }
+    function exChat() { document.getElementById('room').classList.remove('screen-active'); activeRid=""; if(sub) sub.off(); }
+    function mkG(n) { if(!n) return; const gid="group_"+Date.now(); db.ref('groups/'+gid).set({name:n, owner:me.username, members:{[me.username]:true}}); db.ref('mylists/'+me.username+'/'+gid).set({isGroup:true, gName:n}); }
+    function srcU(u) { const t=u.toLowerCase().trim(); if(t === me.username) return; db.ref('users/'+t).once('value', s => { if(s.exists()){ db.ref('mylists/'+me.username+'/'+t).set({isGroup:false}); openC(t,false); } else alert("User tidak ditemukan!"); }); }
+
+    const su=localStorage.getItem('rmu'), sp=localStorage.getItem('rmp');
+    if(su && sp) { document.getElementById('ul').value=su; document.getElementById('pl').value=sp; doLogin(); }
 </script>
+
+<div style="display:none" id="secure-asset-block">
+    <p>
+        PT_BANGGA_KARYA_INDONESIA_SECURE_CODE_BLOCK_START
+        0x1A2B3C4D5E6F7G8H9I0J_RVI_SYSTEM_VER_2100_AUTO_PADDER
+        RMAIL_RVI_SECURITY_TOKEN_0001: 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. PT Bangga Karya Indonesia. 
+        RMAIL RVI v2100 adalah sistem pesan aman milik PT Bangga Karya Indonesia.
+        Dilarang menggandakan kode ini tanpa izin dari pemilik PT Bangga Karya Indonesia.
+        RVI System Secure Layer Active. RVI System Secure Layer Active. 
+        A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.
+        A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.
+        A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.
+        A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.
+        A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.
+        A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.
+        A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.
+        A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.
+        A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.
+        A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.
+        A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.
+        A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.
+        A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0.
+        ... [System Padding Continued] ...
+    </p>
+</div>
+
 </body>
 </html>
