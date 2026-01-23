@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>RMAIL RVI v2100 - PT Bangga Karya Indonesia</title>
+    <title>RMAIL RVI v4.0 - PT BKI</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,29 +11,30 @@
     <style>
         :root { --accent: #fe2c55; --bg: #000; --card: #161616; --border: rgba(255,255,255,0.08); }
         body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; height: 100dvh; margin: 0; overflow: hidden; }
-        .scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 120px; }
-        .v-blue { display: inline-flex; align-items: center; justify-content: center; background: #0070f3; color: white; width: 14px; height: 14px; border-radius: 50%; font-size: 8px; margin-left: 5px; border: 1.5px solid black; box-shadow: 0 0 10px #0070f3; }
-        .v-red { display: inline-flex; align-items: center; justify-content: center; background: #fe2c55; color: white; width: 14px; height: 14px; border-radius: 50%; font-size: 8px; margin-left: 5px; border: 1.5px solid black; box-shadow: 0 0 10px #fe2c55; }
-        .n-badge { background: #fe2c55; color: white; min-width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 900; display: flex; align-items: center; justify-content: center; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); z-index: 10; }
+        .scroll-area { flex: 1; overflow-y: auto; padding-bottom: 120px; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+        .v-blue { display: inline-flex; align-items: center; justify-content: center; background: #0070f3; color: white; width: 14px; height: 14px; border-radius: 50%; font-size: 8px; margin-left: 5px; border: 1.5px solid black; }
         .screen { position: fixed; inset: 0; background: var(--bg); transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; display: flex; flex-direction: column; }
         .screen-active { transform: translateX(0); }
-        .avatar { width: 50px; height: 50px; border-radius: 18px; background: #222; display: flex; align-items: center; justify-content: center; font-weight: 800; border: 1px solid var(--border); overflow: hidden; flex-shrink: 0; position: relative; }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; position: absolute; }
-        .bubble { max-width: 80%; padding: 10px 14px; border-radius: 20px; font-size: 14px; margin-bottom: 4px; position: relative; word-wrap: break-word; display: flex; flex-direction: column; }
+        .bubble { max-width: 85%; padding: 12px; border-radius: 18px; font-size: 14px; margin-bottom: 2px; position: relative; word-wrap: break-word; }
         .b-me { background: #0070f3; align-self: flex-end; border-bottom-right-radius: 4px; }
         .b-them { background: var(--card); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--border); }
-        .msg-time { font-size: 8px; opacity: 0.6; align-self: flex-end; margin-top: 4px; font-weight: bold; }
-        .glass-nav { background: rgba(0,0,0,0.92); backdrop-filter: blur(25px); border-bottom: 1px solid var(--border); z-index: 50; }
+        .avatar { width: 45px; height: 45px; border-radius: 15px; background: #222; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--border); font-weight: 800; position: relative; flex-shrink: 0; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid #000; position: absolute; bottom: 0; right: 0; }
+        .ts { font-size: 8px; opacity: 0.5; margin-bottom: 4px; display: block; }
+        .glass-nav { background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); z-index: 100; }
+        .badge { background: #fe2c55; color: white; font-size: 10px; font-weight: 900; padding: 2px 8px; border-radius: 10px; }
+        .btn-dl { background: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 10px; font-size: 9px; font-weight: 800; margin-top: 5px; display: inline-flex; align-items: center; gap: 5px; }
     </style>
 </head>
 <body>
 
 <div id="gate" class="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center p-10">
-    <div class="w-20 h-20 bg-gradient-to-tr from-[#fe2c55] to-[#0070f3] rounded-[24px] mb-8 flex items-center justify-center font-black text-white text-3xl shadow-2xl">R</div>
+    <div class="w-20 h-20 bg-[#fe2c55] rounded-[24px] mb-8 flex items-center justify-center font-black text-white text-3xl shadow-[0_0_30px_#fe2c5566]">R</div>
     <div class="w-full max-w-xs space-y-3">
         <input type="text" id="ul" placeholder="USERNAME" class="w-full p-4 bg-[#111] border border-white/5 rounded-xl outline-none text-white text-center font-bold uppercase">
         <input type="password" id="pl" placeholder="PASSWORD" class="w-full p-4 bg-[#111] border border-white/5 rounded-xl outline-none text-white text-center font-bold">
-        <button onclick="doLogin()" class="w-full bg-[#fe2c55] py-4 rounded-xl font-black text-white uppercase text-[10px] tracking-widest shadow-lg active:scale-95 transition-all">Connect System</button>
+        <button onclick="doLogin()" class="w-full bg-[#fe2c55] py-4 rounded-xl font-black text-white uppercase text-[10px]">Connect</button>
     </div>
 </div>
 
@@ -42,13 +43,13 @@
         <div class="flex items-center gap-3">
             <div id="my-av" onclick="document.getElementById('f-av').click()" class="avatar cursor-pointer">?</div>
             <div>
-                <div class="flex items-center"><h1 id="my-name" class="text-xs font-black uppercase">...</h1><span id="my-v-badge"></span></div>
-                <button onclick="doLogout()" class="text-[7px] font-black text-red-500 uppercase italic">Power Off</button>
+                <h1 id="my-name" class="text-xs font-black uppercase inline-block">...</h1><span id="my-v-badge"></span>
+                <p class="text-[7px] text-green-500 uppercase font-black">PT BANGGA KARYA INDONESIA</p>
             </div>
         </div>
         <div class="flex gap-2">
-            <button onclick="opM('Grup Baru','Nama','',true,'Buat',g=>createG(g))" class="bg-white/5 p-3 rounded-xl">👥</button>
-            <button onclick="opM('Cari User','Username','',true,'Cari',u=>srcU(u))" class="bg-white/5 p-3 rounded-xl">🔍</button>
+            <button onclick="opM('Cari User','Username','',true,'Cari',u=>srcU(u))" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center">🔍</button>
+            <button onclick="logout()" class="w-10 h-10 bg-red-500/20 text-red-500 rounded-full flex items-center justify-center text-[8px] font-black uppercase">Exit</button>
         </div>
     </header>
     <div id="list" class="scroll-area p-4 space-y-2"></div>
@@ -59,90 +60,64 @@
         <button onclick="exChat()" class="p-2 text-xl">←</button>
         <div id="r-av" class="avatar !w-10 !h-10"></div>
         <div class="flex-1">
-            <div class="flex items-center"><h3 id="r-name" class="font-bold text-xs uppercase truncate">...</h3><span id="r-v-badge"></span></div>
-            <p id="r-status" class="text-[6px] font-black text-green-500 uppercase">Secure RVI Chat</p>
+            <h3 id="r-name" class="font-bold text-xs uppercase truncate inline-block">...</h3><span id="r-v-badge"></span>
+            <p id="r-status" class="text-[6px] font-black uppercase text-gray-500">Offline</p>
         </div>
-        <div id="g-tools" class="hidden flex gap-2">
-            <button onclick="viewGroup()" class="p-2 bg-white/10 rounded-lg text-[8px] font-bold">INFO</button>
-            <button onclick="inviteM()" class="p-2 bg-white/10 rounded-lg text-[8px] font-bold">+</button>
-        </div>
-        <button onclick="delContact()" id="btn-del-c" class="p-2 text-red-500">🗑️</button>
     </header>
-    <div id="canvas" class="scroll-area p-5 flex flex-col gap-2"></div>
-    <div class="p-4 glass-nav flex flex-col gap-2 pb-10">
-        <div class="flex items-center gap-2">
-            <button onclick="document.getElementById('f-msg').click()" class="bg-white/5 p-4 rounded-xl">📎</button>
-            <input type="text" id="mi" placeholder="Pesan..." class="flex-1 bg-white/10 p-4 rounded-2xl outline-none text-sm text-white">
-            <button onclick="snd()" class="w-12 h-12 bg-[#fe2c55] rounded-xl flex items-center justify-center font-black">↑</button>
-        </div>
+    <div id="canvas" class="scroll-area p-5 flex flex-col"></div>
+    <div id="typing-status" class="text-[8px] text-[#fe2c55] font-black px-5 mb-2 hidden uppercase">Rama AI Berpikir...</div>
+    <div class="p-4 glass-nav flex items-center gap-2 pb-10">
+        <button onclick="document.getElementById('f-up').click()" class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">📎</button>
+        <input type="text" id="mi" placeholder="Ketik pesan..." class="flex-1 bg-white/10 p-4 rounded-2xl outline-none text-sm text-white">
+        <button onclick="snd()" class="w-12 h-12 bg-[#fe2c55] rounded-xl flex items-center justify-center font-black">↑</button>
     </div>
 </div>
 
 <div id="modal" class="fixed inset-0 z-[9999] bg-black/95 hidden items-center justify-center p-8 backdrop-blur-md">
     <div class="bg-white text-black p-8 rounded-[30px] w-full max-w-xs text-center">
         <h3 id="mt" class="font-black uppercase text-[10px] mb-4 text-gray-400"></h3>
-        <div id="mw"><input type="text" id="mv" class="w-full bg-gray-100 p-4 rounded-xl outline-none mb-4 font-bold text-center uppercase"></div>
-        <div id="custom-area" class="max-h-60 overflow-y-auto mb-4 text-left"></div>
-        <div class="flex flex-col gap-2">
-            <div class="flex gap-2">
-                <button onclick="clsM()" class="flex-1 font-bold text-[9px] uppercase border p-4 rounded-xl">Batal</button>
-                <button id="mok" class="flex-1 bg-black text-white py-4 rounded-xl font-black text-[9px] uppercase">Ok</button>
-            </div>
-            <button id="btn-del-g" class="hidden w-full bg-red-600 text-white py-4 rounded-xl font-black text-[9px] uppercase mt-2">Hapus Grup</button>
-        </div>
+        <input type="text" id="mv" class="w-full bg-gray-100 p-4 rounded-xl outline-none mb-4 font-bold text-center">
+        <div class="flex gap-2"><button onclick="clsM()" class="flex-1 font-bold text-[9px] uppercase border p-4 rounded-xl">Batal</button><button id="mok" class="flex-1 bg-black text-white py-4 rounded-xl font-black text-[9px] uppercase">Ok</button></div>
     </div>
 </div>
 
-<input type="file" id="f-av" class="hidden" onchange="upFile(event, 'av')">
-<input type="file" id="f-msg" class="hidden" onchange="upFile(event, 'msg')">
+<input type="file" id="f-av" class="hidden" onchange="upFile(event)">
+<input type="file" id="f-up" class="hidden" onchange="handleFileUp(event)">
 
 <script>
     const cfg = { databaseURL: "https://rmail-68719-default-rtdb.asia-southeast1.firebasedatabase.app" };
     firebase.initializeApp(cfg);
     const db = firebase.database();
-    let me = null, activeRid = "", activeTarget = "", isG = false, sub = null, mCB = null, counts = {};
-
-    function opM(t,d,p,h,b,c) { 
-        document.getElementById('mt').innerText=t; 
-        document.getElementById('mv').placeholder=d; 
-        document.getElementById('mv').value=p;
-        document.getElementById('mw').style.display=h?'block':'none'; 
-        document.getElementById('custom-area').innerHTML = "";
-        document.getElementById('btn-del-g').className = "hidden";
-        document.getElementById('modal').style.display='flex'; 
-        mCB=c; 
-    }
-    function clsM() { document.getElementById('modal').style.display='none'; }
-    document.getElementById('mok').onclick=()=>{ if(mCB) mCB(document.getElementById('mv').value.trim()); clsM(); };
+    let me = null, activeRid = "", activeTarget = "", sub = null, loadedMsgs = new Set();
 
     function doLogin() {
         const u = document.getElementById('ul').value.trim().toLowerCase();
         const p = document.getElementById('pl').value.trim();
         if(!u || !p) return;
-        db.ref('users/rai').update({ username: 'rai', verify: 'red', password: '999' });
         db.ref('users/'+u).once('value', s => {
-            if(s.exists()) {
-                if(s.val().password === p) { me = s.val(); loginSuccess(u,p); }
-                else alert("Password Salah!");
-            } else {
-                const newUser = { username: u, password: p, verify: 'none', av: "" };
-                db.ref('users/'+u).set(newUser).then(() => { me = newUser; loginSuccess(u,p); });
-            }
+            if(s.exists() && s.val().password === p) { me = s.val(); loginSuccess(u); }
+            else if(!s.exists()) { const n = { username: u, password: p, verify: 'none', status: 'online' }; db.ref('users/'+u).set(n).then(() => { me = n; loginSuccess(u); }); }
+            else alert("Password Salah!");
         });
     }
 
-    function loginSuccess(u,p) { localStorage.setItem('rmu',u); localStorage.setItem('rmp',p); init(); }
-    function doLogout() { localStorage.clear(); location.reload(); }
+    function loginSuccess(u) { 
+        localStorage.setItem('rmu',u); localStorage.setItem('rmp',document.getElementById('pl').value);
+        db.ref('users/'+u+'/status').onDisconnect().set('offline');
+        db.ref('users/'+u+'/status').set('online');
+        init(); 
+    }
 
+    function logout() { localStorage.clear(); location.reload(); }
+    
     function init() {
         document.getElementById('gate').style.display = 'none';
         db.ref('users/'+me.username).on('value', s => { 
-            me = s.val(); 
-            document.getElementById('my-name').innerText = me.username;
+            me = s.val(); document.getElementById('my-name').innerText = me.username;
             const b = document.getElementById('my-v-badge');
-            b.className = me.verify === 'blue' ? 'v-blue' : (me.verify === 'red' ? 'v-red' : '');
-            b.innerText = b.className ? '✓' : '';
+            b.className = me.verify === 'blue' ? 'v-blue' : ''; b.innerText = b.className ? '✓' : '';
             if(me.av) document.getElementById('my-av').innerHTML = `<img src="${me.av}">`;
+            else document.getElementById('my-av').innerText = me.username[0].toUpperCase();
         });
         loadList();
     }
@@ -150,190 +125,139 @@
     function loadList() {
         db.ref('mylists/'+me.username).on('value', snap => {
             const list = document.getElementById('list'); list.innerHTML = "";
-            snap.forEach(it => {
-                const t = it.key; const d = it.val();
-                const rid = d.isG ? t : [me.username, t].sort().join("_");
+            let contacts = []; snap.forEach(it => { contacts.push({ key: it.key, last: it.val().last || 0, unread: it.val().unread || 0 }); });
+            contacts.sort((a, b) => b.last - a.last);
+            contacts.forEach(item => {
+                const t = item.key;
                 const div = document.createElement('div');
-                div.className = "p-4 flex items-center gap-4 bg-white/5 rounded-[22px] border border-white/5 mb-2 relative active:scale-95 transition-all";
-                div.innerHTML = `
-                    <div class="avatar" id="lav-${t}">${d.isG?'G':t[0].toUpperCase()}</div>
-                    <div class="flex-1" onclick="openC('${t}', ${d.isG})">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center"><h4 class="font-extrabold text-xs uppercase">${d.isG?d.name:t}</h4><span id="lv-${t}"></span></div>
-                            <div id="nb-${t}" class="n-badge hidden">0</div>
-                        </div>
-                        <p id="lp-${t}" class="text-[7px] opacity-30 truncate uppercase font-black">RVI Active</p>
-                    </div>`;
+                div.className = "p-4 flex items-center gap-4 bg-white/5 rounded-[22px] border border-white/5 mb-2 active:scale-95 transition-transform";
+                div.innerHTML = `<div class="avatar" id="lav-${t}">${t[0].toUpperCase()}</div><div class="flex-1" onclick="openC('${t}')" oncontextmenu="event.preventDefault(); delC('${t}')"><div class="flex justify-between items-center"><h4 class="font-extrabold text-xs uppercase">${t} <span id="lv-${t}"></span></h4><span id="ub-${t}" class="badge" style="display:${item.unread > 0 ? 'block':'none'}">${item.unread}</span></div><p class="text-[7px] opacity-30 font-black uppercase">PT BKI</p></div>`;
                 list.appendChild(div);
-
-                db.ref('chats/'+rid).limitToLast(1).on('child_added', s => {
-                    const m = s.val();
-                    if(m.s !== me.username) {
-                        document.getElementById('lp-'+t).innerText = m.s + ": " + (m.type==='file'?'📎 Media':m.t);
-                        if(activeRid !== rid) {
-                            counts[t] = (counts[t] || 0) + 1;
-                            const badge = document.getElementById('nb-'+t);
-                            if(badge) { badge.innerText = counts[t]; badge.classList.remove('hidden'); }
-                        }
-                    }
-                });
-
-                if(!d.isG) db.ref('users/'+t).on('value', s => {
+                db.ref('users/'+t).on('value', s => {
                     const u = s.val(); if(!u) return;
-                    const b = document.getElementById('lv-'+t);
-                    if(u.verify==='red') b.className='v-red', b.innerText='✓';
-                    else if(u.verify==='blue') b.className='v-blue', b.innerText='✓';
-                    if(u.av) document.getElementById(`lav-${t}`).innerHTML = `<img src="${u.av}">`;
+                    const avBox = div.querySelector('.avatar');
+                    const dotClass = u.status === 'online' ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 'bg-gray-500';
+                    if(u.av) avBox.innerHTML = `<img src="${u.av}"><div class="status-dot ${dotClass}"></div>`;
+                    else avBox.innerHTML = `<span>${t[0].toUpperCase()}</span><div class="status-dot ${dotClass}"></div>`;
+                    const b = div.querySelector('#lv-'+t); if(b) { b.className = u.verify==='blue' ? 'v-blue' : ''; b.innerText = b.className ? '✓' : ''; }
                 });
             });
         });
     }
 
-    function formatTime(ts) {
-        const d = new Date(ts);
-        return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
-    }
+    function delC(t) { if(confirm(`Hapus kontak ${t}?`)) db.ref('mylists/'+me.username+'/'+t).remove(); }
 
-    function openC(t, g) {
-        if(sub) sub.off(); activeTarget = t; isG = g;
-        activeRid = g ? t : [me.username, t].sort().join("_");
-        counts[t] = 0; document.getElementById('nb-'+t)?.classList.add('hidden');
+    function openC(t) {
+        if(sub) sub.off(); activeTarget = t; activeRid = [me.username, t].sort().join("_");
         document.getElementById('room').classList.add('screen-active');
-        
-        document.getElementById('r-av').innerHTML = g ? 'G' : t[0].toUpperCase();
-        const b = document.getElementById('r-v-badge'); b.className = ""; b.innerText = "";
-        
-        if(g) {
-            db.ref('groups/'+activeRid).once('value', s => { if(s.exists()) document.getElementById('r-name').innerText = s.val().name; });
-        } else {
-            document.getElementById('r-name').innerText = t;
-            db.ref('users/'+t).once('value', s => {
-                const u = s.val(); if(u?.av) document.getElementById('r-av').innerHTML = `<img src="${u.av}">`;
-                if(u?.verify === 'red') b.className = 'v-red', b.innerText = '✓';
-                if(u?.verify === 'blue') b.className = 'v-blue', b.innerText = '✓';
-            });
-        }
-
+        document.getElementById('r-name').innerText = t;
+        document.getElementById('canvas').innerHTML = ""; loadedMsgs.clear();
+        db.ref('mylists/'+me.username+'/'+t).update({ unread: 0 });
+        db.ref('users/'+t).on('value', s => {
+            const u = s.val(); if(!u) return;
+            document.getElementById('r-status').innerText = u.status === 'online' ? 'Online' : 'Offline';
+            document.getElementById('r-status').className = `text-[6px] font-black uppercase ${u.status === 'online' ? 'text-green-500' : 'text-gray-500'}`;
+            if(u.av) document.getElementById('r-av').innerHTML = `<img src="${u.av}">`;
+            else document.getElementById('r-av').innerText = t[0].toUpperCase();
+            const b = document.getElementById('r-v-badge');
+            b.className = u.verify === 'blue' ? 'v-blue' : ''; b.innerText = b.className ? '✓' : '';
+        });
         sub = db.ref('chats/'+activeRid);
-        sub.on('value', snap => {
-            const canvas = document.getElementById('canvas'); canvas.innerHTML = "";
-            snap.forEach(m => {
-                const d = m.val(); const key = m.key;
-                const div = document.createElement('div');
-                div.className = `bubble ${d.s === me.username ? 'b-me' : 'b-them'}`;
-                div.onclick = () => { if(confirm("Hapus pesan?")) db.ref('chats/'+activeRid+'/'+key).remove(); };
-                
-                let body = d.type === 'file' ? `<img src="${d.file}" class="rounded-xl w-full">` : d.t;
-                let time = formatTime(d.time || Date.now());
-                
-                div.innerHTML = `
-                    <p class="text-[6px] font-black opacity-40 mb-1 uppercase">${d.s}</p>
-                    <div class="text-sm">${body}</div>
-                    <span class="msg-time">${time}</span>
-                `;
-                canvas.appendChild(div);
-            });
-            canvas.scrollTo(0, 1000000);
+        sub.on('child_added', snap => { if(!loadedMsgs.has(snap.key)) { loadedMsgs.add(snap.key); renderMsg(snap.key, snap.val()); } });
+    }
+
+    function renderMsg(id, d) {
+        const time = new Date(d.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const div = document.createElement('div');
+        div.className = `flex flex-col ${d.s === me.username ? 'items-end' : 'items-start'} mb-4`;
+        let content = d.t;
+        if(d.type === 'image') content = `<img src="${d.file}" class="rounded-xl w-64 shadow-lg" onload="scrollToBottom()"><a href="${d.file}" download="RMAIL_${id}.png" class="btn-dl">📥 SIMPAN</a>`;
+        div.innerHTML = `<span class="ts">${time}</span><div class="bubble ${d.s === me.username ? 'b-me' : 'b-them'}" oncontextmenu="event.preventDefault(); if('${d.s===me.username}'==='true' && confirm('Hapus?')) db.ref('chats/'+activeRid+'/'+'${id}').remove();">${content}</div>`;
+        document.getElementById('canvas').appendChild(div);
+        scrollToBottom();
+    }
+
+    function scrollToBottom() { const c = document.getElementById('canvas'); c.scrollTop = c.scrollHeight; }
+
+    async function snd() {
+        const i = document.getElementById('mi'), t = i.value.trim(); if(!t) return;
+        const now = Date.now(); i.value = "";
+        
+        if(t === '/cenru') { db.ref('users/'+me.username+'/verify').set('blue'); return; }
+        if(t === '/umcen') { db.ref('users/'+me.username+'/verify').set('none'); return; }
+        
+        const rid = activeRid, target = activeTarget;
+        await db.ref('chats/'+rid).push({ s: me.username, t: t, time: now });
+        db.ref('mylists/'+me.username+'/'+target).update({ last: now });
+        db.ref('mylists/'+target+'/'+me.username).transaction(v => {
+            return { last: now, unread: ((v && v.unread) || 0) + 1 };
         });
+        if(target === 'rama') handleRamaAI(t, rid);
     }
 
-    async function snd(fileData = null) {
-        const i = document.getElementById('mi'); const t = i.value.trim();
-        if(!t && !fileData) return;
-        const msg = { s: me.username, t: t, time: Date.now(), type: fileData?'file':'text', file: fileData||'' };
-        db.ref('chats/'+activeRid).push(msg);
-        if(!isG) {
-            db.ref('mylists/'+activeTarget+'/'+me.username).update({ last: Date.now(), isG: false });
-            db.ref('mylists/'+me.username+'/'+activeTarget).update({ last: Date.now(), isG: false });
-            if(activeTarget.toLowerCase() === 'rai') handleRAI(t);
-        }
-        i.value = "";
-    }
-
-    function handleRAI(t) {
-        let res = "Sistem RAI PT BKI aktif. Gunakan /kodeblue untuk verifikasi.";
-        if(t.toLowerCase() === '/kodeblue') {
-            db.ref('users/'+me.username).update({ verify: 'blue' });
-            res = "VERIFIKASI BERHASIL ✓.";
-        }
-        setTimeout(() => { db.ref('chats/'+activeRid).push({ s: 'RAI', t: res, time: Date.now() }); }, 300);
-    }
-
-    function viewGroup() {
-        db.ref('groups/'+activeRid).once('value', s => {
-            const data = s.val(); if(!data) return;
-            opM('Info Grup: '+data.name, '', '', false, '', null);
-            const area = document.getElementById('custom-area');
-            const btnDelG = document.getElementById('btn-del-g');
-            if(me.username === data.admin) {
-                btnDelG.className = "w-full bg-red-600 text-white py-4 rounded-xl font-black text-[9px] uppercase mt-4";
-                btnDelG.onclick = () => { if(confirm("HAPUS GRUP?")) deleteGroup(activeRid); };
+    async function handleRamaAI(prompt, rid) {
+        if(activeTarget === 'rama') document.getElementById('typing-status').classList.remove('hidden');
+        const now = Date.now();
+        let resData = { s:'rama', time: now };
+        try {
+            if (prompt.toLowerCase().includes("gambar") || prompt.toLowerCase().includes("foto")) {
+                const seed = Math.floor(Math.random() * 999999);
+                const img = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?seed=${seed}&width=1024&height=1024&nologo=true`;
+                resData.t = 'Sesuai pesanan, Pak Rama:'; resData.type = 'image'; resData.file = img;
+            } else {
+                const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai&system=Kamu Rama AI asisten PT Bangga Karya Indonesia.`);
+                resData.t = await res.text();
             }
-            Object.keys(data.members).forEach(m => {
-                const item = document.createElement('div');
-                item.className = "flex justify-between items-center p-3 border-b text-[10px] font-bold uppercase";
-                item.innerHTML = `<span>${m} ${m===data.admin?'👑':''}</span>`;
-                if(me.username === data.admin && m !== me.username) {
-                    const btn = document.createElement('button');
-                    btn.className = "text-red-500 font-bold"; btn.innerText = "KICK";
-                    btn.onclick = () => { db.ref('groups/'+activeRid+'/members/'+m).remove(); db.ref('mylists/'+m+'/'+activeRid).remove(); viewGroup(); };
-                    item.appendChild(btn);
-                }
-                area.appendChild(item);
-            });
-        });
+            
+            await db.ref('chats/'+rid).push(resData);
+            
+            // Logic angka pesan baru jika user sedang di luar chat Rama
+            if(activeTarget !== 'rama') {
+                db.ref('mylists/'+me.username+'/rama').transaction(v => {
+                    return { last: now, unread: ((v && v.unread) || 0) + 1 };
+                });
+            } else {
+                db.ref('mylists/'+me.username+'/rama').update({ last: now, unread: 0 });
+            }
+        } catch (e) {}
+        if(activeTarget === 'rama') document.getElementById('typing-status').classList.add('hidden');
     }
 
-    function deleteGroup(gid) {
-        db.ref('groups/'+gid+'/members').once('value', s => {
-            s.forEach(m => { db.ref('mylists/'+m.key+'/'+gid).remove(); });
-            db.ref('groups/'+gid).remove(); db.ref('chats/'+gid).remove();
-            exChat(); clsM();
-        });
+    function exChat() { if(sub) sub.off(); document.getElementById('room').classList.remove('screen-active'); activeTarget = ""; }
+    function opM(t,d,p,h,b,c) { document.getElementById('mt').innerText=t; document.getElementById('mv').placeholder=d; document.getElementById('modal').style.display='flex'; mCB=c; }
+    function clsM() { document.getElementById('modal').style.display='none'; }
+    document.getElementById('mok').onclick=()=>{ if(mCB) mCB(document.getElementById('mv').value.trim()); clsM(); };
+    
+    function srcU(u) { 
+        if(!u) return; 
+        const target = u.toLowerCase();
+        db.ref('users/'+target).once('value', s => { 
+            if(s.exists()) { 
+                db.ref('mylists/'+me.username+'/'+target).update({last: Date.now()}); 
+                openC(target); 
+            } else { alert("User tidak ditemukan"); }
+        }); 
     }
 
-    function srcU(u) {
-        if(!u) return; const target = u.toLowerCase();
-        db.ref('users/'+target).once('value', s => {
-            if(s.exists()){ db.ref('mylists/'+me.username+'/'+target).update({isG:false, last:Date.now()}); openC(target, false); }
-            else alert("User tidak ditemukan!");
-        });
+    function upFile(e) { 
+        const f = e.target.files[0]; 
+        const r = new FileReader(); 
+        r.onload = (ev) => { db.ref('users/'+me.username+'/av').set(ev.target.result); }; 
+        r.readAsDataURL(f); 
     }
 
-    function createG(n) {
-        if(!n) return; const id = 'GRP' + Date.now();
-        db.ref('groups/'+id).set({ name: n, admin: me.username, members: { [me.username]: true } });
-        db.ref('mylists/'+me.username+'/'+id).set({ isG: true, name: n });
-    }
-
-    function inviteM() {
-        opM('Tambah Anggota','Username User','',true,'Tambah', uInput => {
-            const u = uInput.toLowerCase().trim();
-            if(!u) return;
-            db.ref('users/' + u).once('value').then(snap => {
-                if(snap.exists()) {
-                    db.ref('groups/' + activeRid + '/members/' + u).set(true);
-                    db.ref('groups/' + activeRid + '/name').once('value', nSnap => {
-                        db.ref('mylists/' + u + '/' + activeRid).set({ isG: true, name: nSnap.val() || "Grup Baru" });
-                        alert(u + " Berhasil ditambahkan!");
-                    });
-                } else { alert("Gagal: Username '" + u + "' tidak ada!"); }
-            });
-        });
-    }
-
-    function upFile(e, m) {
+    function handleFileUp(e) {
         const f = e.target.files[0]; if(!f) return;
-        const r = new FileReader(); r.onload = (ev) => {
-            if(m === 'av') db.ref('users/'+me.username+'/av').set(ev.target.result);
-            else snd(ev.target.result);
-        };
+        const r = new FileReader(); 
+        r.onload = async (ev) => {
+            const now = Date.now();
+            await db.ref('chats/'+activeRid).push({ s: me.username, type: 'image', file: ev.target.result, time: now });
+            db.ref('mylists/'+me.username+'/'+activeTarget).update({ last: now });
+        }; 
         r.readAsDataURL(f);
     }
 
-    function delContact() { if(confirm("Hapus kontak?")) { db.ref('mylists/'+me.username+'/'+activeTarget).remove(); exChat(); } }
-    function exChat() { if(sub) sub.off(); document.getElementById('room').classList.remove('screen-active'); activeRid=""; }
-    const su=localStorage.getItem('rmu'), sp=localStorage.getItem('rmp');
+    const su=localStorage.getItem('rmu'), sp=localStorage.getItem('rmp'); 
     if(su && sp) { document.getElementById('ul').value=su; document.getElementById('pl').value=sp; doLogin(); }
 </script>
 </body>
