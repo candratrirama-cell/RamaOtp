@@ -1,62 +1,122 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Website Ditutup</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    body {
-      background: #0f0f0f;
-      color: #ffffff;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .container {
-      padding: 30px;
-      max-width: 500px;
-    }
-
-    h1 {
-      font-size: 32px;
-      margin-bottom: 15px;
-      color: #ff4d4d;
-    }
-
-    p {
-      font-size: 16px;
-      line-height: 1.6;
-      opacity: 0.85;
-    }
-
-    .footer {
-      margin-top: 25px;
-      font-size: 13px;
-      opacity: 0.6;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viral Boost - Custom Order</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .main-card {
+            background: #ffffff;
+            border: 4px solid #000;
+            box-shadow: 12px 12px 0px #22c55e;
+            border-radius: 30px;
+        }
+        .input-style {
+            border: 2px solid #000;
+            border-radius: 15px;
+            box-shadow: 4px 4px 0px #000;
+        }
+        .btn-order {
+            background: #22c55e;
+            border: 3px solid #000;
+            box-shadow: 0px 6px 0px #166534;
+            transition: all 0.1s;
+        }
+        .btn-order:active {
+            box-shadow: 0px 0px 0px #166534;
+            transform: translateY(6px);
+        }
+    </style>
 </head>
-<body>
-  <div class="container">
-    <h1>🚫 Website Ditutup</h1>
-    <p>
-      Website ini telah <b>ditutup sepenuhnya oleh developer</b>.<br>
-      Tidak ada layanan, fitur, atau akses yang tersedia.
-    </p>
+<body class="bg-green-50 min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
 
-    <div class="footer">
-      © 2026 — Developer
+    <div class="absolute top-10 left-10 text-5xl opacity-30 animate-float">💸</div>
+    <div class="absolute bottom-20 right-10 text-5xl opacity-30 animate-float" style="animation-delay: 1s">🚀</div>
+
+    <div class="max-w-md w-full main-card p-8 animate__animated animate__zoomIn">
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-black italic text-gray-900 uppercase">WA Boost <span class="text-green-600">Panel</span></h1>
+            <p class="text-xs font-bold text-gray-500 tracking-widest mt-1">PROSES KILAT • HARGA MERAKYAT</p>
+        </div>
+
+        <div class="space-y-6">
+            <div>
+                <label class="block text-sm font-black mb-2 uppercase tracking-wide">Mau Berapa Followers?</label>
+                <input type="number" id="jumlah" value="10" min="10" oninput="kalkulasi()" 
+                    class="w-full p-4 input-style text-xl font-black focus:outline-none focus:bg-yellow-50 transition-colors">
+                <p class="text-[10px] mt-2 font-bold text-green-600 italic">* 1 Follower hanya Rp 100</p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-black mb-2 uppercase tracking-wide">Link Saluran WhatsApp</label>
+                <input type="text" id="link_wa" placeholder="https://whatsapp.com/channel/..." 
+                    class="w-full p-4 input-style font-bold focus:outline-none focus:bg-yellow-50">
+            </div>
+
+            <div class="bg-yellow-300 border-4 border-black p-4 rounded-2xl">
+                <p class="text-[10px] font-black uppercase text-center mb-1">Total Tagihan Anda:</p>
+                <div id="total_display" class="text-4xl font-black text-center text-gray-900">Rp 1.000</div>
+            </div>
+
+            <button onclick="kirimKeWA()" class="w-full btn-order py-5 text-white font-black text-xl rounded-2xl flex items-center justify-center gap-3">
+                GAS ORDER SEKARANG! ⚡
+            </button>
+        </div>
+
+        <p class="mt-6 text-center text-[10px] font-bold text-gray-400">© 2026 WA-BOOSTER - All Rights Reserved</p>
     </div>
-  </div>
+
+    <script>
+        const HARGA_SATUAN = 100;
+
+        function kalkulasi() {
+            let qty = document.getElementById('jumlah').value;
+            let display = document.getElementById('total_display');
+            
+            if(qty < 0 || qty == "") qty = 0;
+            
+            let total = qty * HARGA_SATUAN;
+            display.innerText = "Rp " + total.toLocaleString('id-ID');
+            
+            // Animasi angka berubah
+            display.classList.remove('animate__animated', 'animate__headShake');
+            void display.offsetWidth; 
+            display.classList.add('animate__animated', 'animate__headShake');
+        }
+
+        function kirimKeWA() {
+            const qty = document.getElementById('jumlah').value;
+            const link = document.getElementById('link_wa').value;
+            const total = document.getElementById('total_display').innerText;
+            const nomorAdmin = "62882008519349"; // GANTI NOMOR WA KAMU DISINI
+
+            if (qty < 10) {
+                alert("Minimal pembelian adalah 10 followers!");
+                return;
+            }
+            if (link === "") {
+                alert("Tolong masukkan link saluran WA kamu!");
+                return;
+            }
+
+            // Teks Pesan Otomatis yang masuk ke WA kamu
+            const templatePesan = 
+                `Halo Admin! Saya mau order followers Saluran WA.%0A%0A` +
+                `📊 *Pesanan:* ${qty} Followers%0A` +
+                `🔗 *Link Saluran:* ${link}%0A` +
+                `💰 *Total Harga:* ${total}%0A%0A` +
+                `Tolong segera dikerjakan ya! Terima kasih.`;
+
+            window.open(`https://wa.me/${nomorAdmin}?text=${templatePesan}`, '_blank');
+        }
+    </script>
 </body>
 </html>
