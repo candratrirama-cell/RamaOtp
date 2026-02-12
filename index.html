@@ -3,119 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viral Boost - Custom Order</title>
+    <title>VIP WA BOOSTER PANEL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(5deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f8fafc;
+            color: #000;
         }
-        .animate-float { animation: float 3s ease-in-out infinite; }
-        .main-card {
-            background: #ffffff;
+
+        .neo-card {
+            background: white;
             border: 4px solid #000;
-            box-shadow: 12px 12px 0px #22c55e;
-            border-radius: 30px;
+            box-shadow: 10px 10px 0px #000;
+            border-radius: 24px;
         }
-        .input-style {
-            border: 2px solid #000;
-            border-radius: 15px;
-            box-shadow: 4px 4px 0px #000;
-        }
-        .btn-order {
-            background: #22c55e;
+
+        .neo-btn {
             border: 3px solid #000;
-            box-shadow: 0px 6px 0px #166534;
+            box-shadow: 0px 4px 0px #000;
             transition: all 0.1s;
         }
-        .btn-order:active {
-            box-shadow: 0px 0px 0px #166534;
-            transform: translateY(6px);
+
+        .neo-btn:active {
+            box-shadow: 0px 0px 0px #000;
+            transform: translateY(4px);
+        }
+
+        .modal-overlay {
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .price-item {
+            border: 2px solid #000;
+            transition: 0.2s;
+        }
+
+        .price-item:hover {
+            background: #dcfd8b;
+        }
+
+        .tab-active {
+            background: #000 !important;
+            color: #fff !important;
+        }
+
+        .promo-badge {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
-<body class="bg-green-50 min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+<body class="min-h-screen flex items-center justify-center p-4">
 
-    <div class="absolute top-10 left-10 text-5xl opacity-30 animate-float">💸</div>
-    <div class="absolute bottom-20 right-10 text-5xl opacity-30 animate-float" style="animation-delay: 1s">🚀</div>
-
-    <div class="max-w-md w-full main-card p-8 animate__animated animate__zoomIn">
-        <div class="text-center mb-6">
-            <h1 class="text-3xl font-black italic text-gray-900 uppercase">WA Boost <span class="text-green-600">Panel</span></h1>
-            <p class="text-xs font-bold text-gray-500 tracking-widest mt-1">PROSES KILAT • HARGA MERAKYAT</p>
+    <div class="max-w-md w-full neo-card p-6 animate__animated animate__fadeIn">
+        
+        <!-- Header & LID -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-black italic uppercase tracking-tighter">VIP<span class="text-green-600">BOOST</span></h1>
+            <div class="bg-black text-white px-3 py-1 rounded-lg text-center">
+                <p class="text-[7px] font-bold opacity-70 uppercase">LID PERANGKAT</p>
+                <p id="displayLID" class="text-xs font-black tracking-widest">000000000</p>
+            </div>
         </div>
 
-        <div class="space-y-6">
+        <!-- PANDUAN GAMBAR (Foto dari User) -->
+        <div class="mb-6 border-4 border-black rounded-2xl overflow-hidden bg-white shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+            <p class="bg-green-500 border-b-4 border-black text-[10px] font-black p-2 text-center uppercase text-white">Panduan Ambil Link Reaction</p>
+            <div class="p-2 flex flex-col items-center">
+                <!-- Foto Tutorial -->
+                <img src="https://i.ibb.co/XrnM3hB/1000048481.png" alt="Panduan Ambil Link Saluran" class="w-full h-auto rounded-lg border-2 border-black">
+                <div class="mt-2 bg-yellow-100 p-2 rounded-lg border-2 border-black w-full text-center">
+                    <p class="text-[9px] font-bold text-gray-800 uppercase italic">Klik ikon rantai yang ditunjuk panah hijau di atas!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Selector -->
+        <div class="flex gap-2 mb-4">
+            <button onclick="switchMode('foll')" id="tabFoll" class="flex-1 py-3 border-2 border-black rounded-xl font-black text-[10px] tab-active transition-all">FOLLOWERS CUSTOM</button>
+            <button onclick="switchMode('react')" id="tabReact" class="flex-1 py-3 border-2 border-black rounded-xl font-black text-[10px] bg-white transition-all">REACTION LIST</button>
+        </div>
+
+        <!-- Fitur Custom Promo (Followers) -->
+        <div id="follSection" class="space-y-4">
+            <div class="bg-red-500 text-white p-3 rounded-xl border-2 border-black promo-badge">
+                <p class="text-[10px] font-black uppercase text-center italic tracking-widest">🔥 PROMO BURUAN: 1 FOLLOWERS = Rp 100 🔥</p>
+            </div>
             <div>
-                <label class="block text-sm font-black mb-2 uppercase tracking-wide">Mau Berapa Followers?</label>
-                <input type="number" id="jumlah" value="10" min="10" oninput="kalkulasi()" 
-                    class="w-full p-4 input-style text-xl font-black focus:outline-none focus:bg-yellow-50 transition-colors">
-                <p class="text-[10px] mt-2 font-bold text-green-600 italic">* 1 Follower hanya Rp 200</p>
+                <label class="block text-[10px] font-black mb-1 uppercase italic ml-1">Jumlah Followers (10 - 3000):</label>
+                <input type="number" id="customFollCount" oninput="calculateCustomFoll()" placeholder="Masukkan jumlah..." class="w-full p-4 border-2 border-black rounded-2xl font-bold outline-none focus:bg-blue-50">
+                <p class="text-[9px] font-bold text-gray-500 mt-1 ml-1">*Minimal 10, Maksimal 3000</p>
             </div>
+        </div>
 
-            <div>
-                <label class="block text-sm font-black mb-2 uppercase tracking-wide">Link Saluran WhatsApp</label>
-                <input type="text" id="link_wa" placeholder="https://whatsapp.com/channel/..." 
-                    class="w-full p-4 input-style font-bold focus:outline-none focus:bg-yellow-50">
-            </div>
-
-            <div class="bg-yellow-300 border-4 border-black p-4 rounded-2xl">
-                <p class="text-[10px] font-black uppercase text-center mb-1">Total Tagihan Anda:</p>
-                <div id="total_display" class="text-4xl font-black text-center text-gray-900">Rp 1.000</div>
-            </div>
-
-            <button onclick="kirimKeWA()" class="w-full btn-order py-5 text-white font-black text-xl rounded-2xl flex items-center justify-center gap-3">
-                GAS ORDER SEKARANG! ⚡
+        <!-- Fitur Reaction (Pop-up List) -->
+        <div id="reactSection" class="hidden space-y-4">
+            <label class="block text-[10px] font-black mb-1 uppercase italic ml-1">Pilih Paket Reaction:</label>
+            <button onclick="openPopup()" class="w-full p-4 border-2 border-black rounded-2xl flex justify-between items-center font-bold bg-gray-50 hover:bg-white transition-all">
+                <span id="selectedLabel">Klik Untuk Lihat Harga</span>
+                <span class="text-xl">▼</span>
             </button>
         </div>
 
-        <p class="mt-6 text-center text-[10px] font-bold text-gray-400">© 2026 WA-BOOSTER - All Rights Reserved</p>
+        <!-- Input Link & Total -->
+        <div class="space-y-4 mt-4">
+            <div>
+                <label class="block text-[10px] font-black mb-1 uppercase italic ml-1">Tautan Saluran Target:</label>
+                <input type="text" id="targetLink" placeholder="Tempel tautan disini..." class="w-full p-4 border-2 border-black rounded-2xl font-bold outline-none focus:bg-green-50 transition-all">
+            </div>
+
+            <div class="bg-yellow-300 border-4 border-black p-4 rounded-2xl text-center shadow-[4px_4px_0px_#000]">
+                <p class="text-[9px] font-black uppercase text-black/60">Total Bayar</p>
+                <h2 id="finalPrice" class="text-4xl font-black">Rp 0</h2>
+            </div>
+
+            <button onclick="submitOrder()" class="neo-btn w-full bg-green-500 py-6 rounded-2xl text-white font-black text-xl uppercase italic tracking-tighter">
+                Kirim Pesanan Sekarang! 🚀
+            </button>
+        </div>
+    </div>
+
+    <!-- JENDELA POP-UP KUSTOM (DAFTAR HARGA REACTION) -->
+    <div id="modalPrice" class="fixed inset-0 hidden z-50 modal-overlay flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-[32px] border-4 border-black p-6 animate__animated animate__zoomIn">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-black uppercase tracking-tight">Paket Reaction</h3>
+                <button onclick="closePopup()" class="w-10 h-10 bg-red-500 text-white rounded-xl border-2 border-black font-black hover:bg-red-600">X</button>
+            </div>
+            <div id="priceGrid" class="space-y-2 max-h-[60vh] overflow-y-auto pr-2">
+                <!-- List Harga Dinamis -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOM ERROR NOTIF -->
+    <div id="customError" class="fixed top-6 left-1/2 -translate-x-1/2 hidden z-[100] bg-white text-red-600 px-6 py-4 rounded-2xl border-4 border-black shadow-[5px_5px_0px_#ef4444] font-black uppercase text-xs animate__animated animate__shakeX">
+        ⚠️ <span id="errorMsg">Lengkapi data dulu!</span>
     </div>
 
     <script>
-        const HARGA_SATUAN = 200;
+        // LID Permanen Perangkat
+        let lid = localStorage.getItem('lid_promo_v4');
+        if(!lid) {
+            lid = Math.floor(100000000 + Math.random() * 900000000);
+            localStorage.setItem('lid_promo_v4', lid);
+        }
+        document.getElementById('displayLID').innerText = lid;
 
-        function kalkulasi() {
-            let qty = document.getElementById('jumlah').value;
-            let display = document.getElementById('total_display');
+        let currentMode = 'foll';
+        let selectedPackage = null; // Untuk Reaction
+        let customPriceValue = 0; // Untuk Followers
+
+        const listReact = [
+            {q: 2, p: 2000}, {q: 4, p: 3000}, {q: 6, p: 4000}, {q: 8, p: 5000}, {q: 10, p: 6000},
+            {q: 20, p: 11000}, {q: 40, p: 21000}, {q: 50, p: 26000}, {q: 100, p: 51000}, {q: 200, p: 101000}
+        ];
+
+        function switchMode(mode) {
+            currentMode = mode;
+            document.getElementById('tabFoll').className = `flex-1 py-3 border-2 border-black rounded-xl font-black text-[9px] ${mode === 'foll' ? 'tab-active' : 'bg-white'}`;
+            document.getElementById('tabReact').className = `flex-1 py-3 border-2 border-black rounded-xl font-black text-[9px] ${mode === 'react' ? 'tab-active' : 'bg-white'}`;
             
-            if(qty < 0 || qty == "") qty = 0;
+            document.getElementById('follSection').classList.toggle('hidden', mode === 'react');
+            document.getElementById('reactSection').classList.toggle('hidden', mode === 'foll');
             
-            let total = qty * HARGA_SATUAN;
-            display.innerText = "Rp " + total.toLocaleString('id-ID');
-            
-            // Animasi angka berubah
-            display.classList.remove('animate__animated', 'animate__headShake');
-            void display.offsetWidth; 
-            display.classList.add('animate__animated', 'animate__headShake');
+            resetState();
         }
 
-        function kirimKeWA() {
-            const qty = document.getElementById('jumlah').value;
-            const link = document.getElementById('link_wa').value;
-            const total = document.getElementById('total_display').innerText;
-            const nomorAdmin = "62882008519349"; // GANTI NOMOR WA KAMU DISINI
+        function resetState() {
+            selectedPackage = null;
+            customPriceValue = 0;
+            document.getElementById('customFollCount').value = "";
+            document.getElementById('selectedLabel').innerText = "Klik Untuk Lihat Harga";
+            document.getElementById('finalPrice').innerText = "Rp 0";
+        }
 
-            if (qty < 10) {
-                alert("Minimal pembelian adalah 10 followers!");
+        function calculateCustomFoll() {
+            const count = document.getElementById('customFollCount').value;
+            if (count >= 10 && count <= 3000) {
+                customPriceValue = count * 100;
+                document.getElementById('finalPrice').innerText = "Rp " + customPriceValue.toLocaleString('id-ID');
+            } else {
+                customPriceValue = 0;
+                document.getElementById('finalPrice').innerText = "Rp 0";
+            }
+        }
+
+        function openPopup() {
+            const grid = document.getElementById('priceGrid');
+            grid.innerHTML = "";
+
+            listReact.forEach(item => {
+                const btn = document.createElement('div');
+                btn.className = "price-item p-4 rounded-xl flex justify-between items-center cursor-pointer font-bold";
+                btn.innerHTML = `<span>${item.q} Reaction</span><span class="text-green-600">Rp ${item.p.toLocaleString('id-ID')}</span>`;
+                btn.onclick = () => {
+                    selectedPackage = item;
+                    document.getElementById('selectedLabel').innerText = `${item.q} Reaction - Rp ${item.p.toLocaleString('id-ID')}`;
+                    document.getElementById('finalPrice').innerText = "Rp " + item.p.toLocaleString('id-ID');
+                    closePopup();
+                };
+                grid.appendChild(btn);
+            });
+
+            document.getElementById('modalPrice').classList.remove('hidden');
+        }
+
+        function closePopup() {
+            document.getElementById('modalPrice').classList.add('hidden');
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('customError');
+            document.getElementById('errorMsg').innerText = msg;
+            el.classList.remove('hidden');
+            setTimeout(() => el.classList.add('hidden'), 3000);
+        }
+
+        function submitOrder() {
+            const link = document.getElementById('targetLink').value;
+            const lidVal = localStorage.getItem('lid_promo_v4');
+            const adminWA = "62882008519349"; // GANTI NOMOR ANDA
+            
+            if(!link) {
+                showError("Tautan saluran wajib diisi!");
                 return;
             }
-            if (link === "") {
-                alert("Tolong masukkan link saluran WA kamu!");
-                return;
+
+            let detailPesanan = "";
+            let totalBayar = "";
+
+            if(currentMode === 'foll') {
+                const count = document.getElementById('customFollCount').value;
+                if(count < 10 || count > 3000) {
+                    showError("Jumlah followers minimal 10 & maksimal 3000!");
+                    return;
+                }
+                detailPesanan = `${count} Followers (Custom Promo)`;
+                totalBayar = "Rp " + (count * 100).toLocaleString('id-ID');
+            } else {
+                if(!selectedPackage) {
+                    showError("Pilih paket reaction dulu!");
+                    return;
+                }
+                detailPesanan = `${selectedPackage.q} Reaction`;
+                totalBayar = "Rp " + selectedPackage.p.toLocaleString('id-ID');
             }
 
-            // Teks Pesan Otomatis yang masuk ke WA kamu
-            const templatePesan = 
-                `Halo Admin! Saya mau order followers Saluran WA.%0A%0A` +
-                `📊 *Pesanan:* ${qty} Followers%0A` +
-                `🔗 *Link Saluran:* ${link}%0A` +
-                `💰 *Total Harga:* ${total}%0A%0A` +
-                `Tolong segera dikerjakan ya! Terima kasih.`;
-
-            window.open(`https://wa.me/${nomorAdmin}?text=${templatePesan}`, '_blank');
+            const pesan = `Halo Admin! Saya mau order.%0A%0A🆔 *LID:* ${lidVal}%0A📦 *Pesanan:* ${detailPesanan}%0A🔗 *Link Target:* ${link}%0A💰 *Total:* ${totalBayar}`;
+            
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            
+            setTimeout(() => {
+                window.open(`https://wa.me/${adminWA}?text=${pesan}`, '_blank');
+            }, 600);
         }
     </script>
 </body>
