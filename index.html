@@ -28,7 +28,6 @@
             overflow: hidden;
         }
 
-        /* Premium Neo-Glass Card */
         .premium-card { 
             background: rgba(255, 255, 255, 0.95); 
             border: 5px solid var(--wa-deep); 
@@ -161,8 +160,8 @@
                 </div>
 
                 <div class="input-group">
-                    <label id="qtyLabel">Jumlah Followers (Min 50)</label>
-                    <input type="number" id="waQty" oninput="calculateTotal()" placeholder="Contoh: 500" class="input-box">
+                    <label id="qtyLabel">Jumlah Followers (Min 10)</label>
+                    <input type="number" id="waQty" oninput="calculateTotal()" placeholder="Contoh: 10" class="input-box">
                 </div>
 
                 <div class="input-group">
@@ -203,11 +202,11 @@
             if (server === 's1') {
                 desc.innerHTML = "<span>⚠️</span> Server 1: Ekonomis. Bisa drop kapan saja.";
                 desc.className = "server-badge badge-s1";
-                if (qty >= 50) total = qty * 100;
+                if (qty >= 10) total = qty * 100;
             } else {
                 desc.innerHTML = "<span>✅</span> Server 2: Premium. Garansi 7 Hari (Refill).";
                 desc.className = "server-badge badge-s2";
-                if (qty >= 50) total = qty * 200;
+                if (qty >= 10) total = qty * 200;
             }
 
             document.getElementById('waTotal').innerText = "Rp " + Math.floor(total).toLocaleString('id-ID');
@@ -224,17 +223,17 @@
 
         function handleOrder() {
             const server = document.getElementById('waServer').value;
-            const qty = document.getElementById('waQty').value;
+            const qty = parseInt(document.getElementById('waQty').value) || 0;
             const link = document.getElementById('waLink').value;
             const price = document.getElementById('waTotal').innerText;
             const sName = server === 's1' ? "SERVER 1 (NON-GARANSI)" : "SERVER 2 (GARANSI 7 HARI)";
 
-            if(qty < 50 || !link) {
-                alert("Woi! Isi dulu link saluran sama jumlahnya (Min 50)!");
+            if(qty < 10 || !link) {
+                alert("Isi dulu link saluran sama jumlahnya bos! (Minimal 10)");
                 return;
             }
 
-            const waAdmin = "628123456789"; // Ganti nomor admin ente
+            const waAdmin = "628123456789"; 
             const msg = `ASSALAMUALAIKUM ADMIN%0AORDER WACHANNEL BOOST 🚀%0A%0A🖥️ SERVER: ${sName}%0A🔢 JUMLAH: ${qty} FOLLOWERS%0A🔗 LINK: ${link}%0A💰 TOTAL: ${price}${isAutoGrow ? '%0A⚡ MODE: AUTO-GROW AKTIF' : ''}%0A%0AProses min!`;
 
             confetti({
