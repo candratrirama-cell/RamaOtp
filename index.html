@@ -1,252 +1,180 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WACHANNEL BOOST - CUSTOM BY @MARAMADHONA</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <title>Stevana Pro Fix - GoR 1.1 Lock</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
-        
-        :root {
-            --wa-green: #25d366;
-            --wa-dark: #054c44;
-            --wa-deep: #022c22;
-            --accent: #fbbf24;
-        }
-
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: radial-gradient(circle at center, var(--wa-dark), var(--wa-deep)); 
-            color: #fff; 
-            min-height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            margin: 0;
-            overflow: hidden;
-        }
-
-        .premium-card { 
-            background: rgba(255, 255, 255, 0.95); 
-            border: 5px solid var(--wa-deep); 
-            box-shadow: 15px 15px 0px var(--wa-green); 
-            border-radius: 45px; 
-            color: var(--wa-deep); 
-            width: 100%; 
-            max-width: 430px; 
-            position: relative;
-            backdrop-filter: blur(10px);
-        }
-
-        .input-group label {
-            font-size: 11px;
-            font-weight: 900;
-            text-transform: uppercase;
-            font-style: italic;
-            margin-bottom: 5px;
-            display: block;
-            color: var(--wa-dark);
-        }
-
-        .input-box { 
-            border: 3px solid var(--wa-dark); 
-            box-shadow: 4px 4px 0px var(--wa-dark); 
-            width: 100%; 
-            padding: 15px; 
-            border-radius: 22px; 
-            font-weight: 800; 
-            outline: none; 
-            background: #f0fff4;
-            transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .input-box:focus {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px var(--wa-dark);
-            background: #fff;
-        }
-
-        .btn-order { 
-            background: var(--wa-green);
-            color: white;
-            border: 3px solid var(--wa-dark);
-            box-shadow: 0px 7px 0px var(--wa-dark);
-            border-radius: 28px;
-            padding: 22px;
-            font-weight: 900;
-            font-size: 1.4rem;
-            text-transform: uppercase;
-            font-style: italic;
-            width: 100%;
-            transition: 0.1s;
-        }
-
-        .btn-order:active {
-            transform: translateY(7px);
-            box-shadow: 0px 0px 0px var(--wa-dark);
-        }
-
-        .total-container {
-            background: var(--accent);
-            border: 4px solid var(--wa-dark);
-            box-shadow: 7px 7px 0px var(--wa-dark);
-            border-radius: 30px;
-            transform: rotate(-1.5deg);
-            margin: 25px 0;
-        }
-
-        .server-badge {
-            font-size: 10px;
-            font-weight: 800;
-            padding: 10px;
-            border-radius: 15px;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 2px solid var(--wa-dark);
-        }
-
-        .badge-s1 { background: #fee2e2; color: #991b1b; }
-        .badge-s2 { background: #dcfce7; color: #166534; }
-
-        .floating-moon {
-            position: absolute;
-            top: -30px;
-            left: -15px;
-            font-size: 3.5rem;
-            filter: drop-shadow(0 0 15px var(--accent));
-            animation: float 4s infinite ease-in-out;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(-10deg); }
-            50% { transform: translateY(-15px) rotate(5deg); }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap');
+        :root { --primary: #FF9F43; --success: #2ECC71; --danger: #FF7675; --blue: #0984E3; --bg: #6C5CE7; }
+        body { font-family: 'Nunito', sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        #login-screen { position: fixed; inset: 0; background: var(--primary); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .btn-google { background: white; color: #444; padding: 15px 30px; border-radius: 50px; border: none; font-weight: 900; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .app-container { background: white; width: 92%; max-width: 450px; height: 90vh; border-radius: 40px; position: relative; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .header { background: #f1f2f6; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #dfe4ea; }
+        .user-pp { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); }
+        .points-badge { background: var(--success); color: white; padding: 5px 12px; border-radius: 15px; font-weight: 900; }
+        #leaderboard { position: absolute; inset: 0; background: white; z-index: 100; display: none; flex-direction: column; padding: 20px; }
+        .rank-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
+        .game-content { flex: 1; padding: 20px; text-align: center; overflow-y: auto; }
+        .maskot-frame { width: 120px; height: 120px; margin: 10px auto; border: 5px solid var(--primary); border-radius: 50%; overflow: hidden; }
+        .maskot-frame img { width: 100%; height: 100%; object-fit: contain; }
+        .bubble { background: #f9f9f9; padding: 20px; border-radius: 25px; border: 3px solid #eee; margin: 15px 0; min-height: 80px; }
+        .btn-action { width: 100%; padding: 18px; border: none; border-radius: 25px; font-size: 1.1rem; font-weight: 900; color: white; margin-bottom: 10px; cursor: pointer; }
+        .btn-listen { background: #00b894; box-shadow: 0 5px 0 #00896f; }
+        .btn-speak { background: var(--primary); box-shadow: 0 5px 0 #e17055; }
+        .btn-speak.active { background: var(--danger); transform: translateY(5px); box-shadow: none; }
+        .nav-bar { display: flex; gap: 10px; padding: 10px 20px 20px; }
+        .nav-bar button { flex: 1; padding: 12px; border: none; border-radius: 15px; font-weight: 900; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="p-4 w-full flex justify-center items-center">
-        <div class="premium-card p-9 animate__animated animate__backInDown">
-            <div class="floating-moon">🌙</div>
-            
-            <!-- Header -->
-            <div class="text-center mb-10" id="headerLogo" style="cursor: pointer;">
-                <h1 class="text-4xl font-black italic tracking-tighter uppercase leading-none text-emerald-900">
-                    WA<span class="text-green-500">CHANNEL</span>
-                </h1>
-                <div class="flex items-center justify-center gap-2 mt-2">
-                    <span class="bg-emerald-950 text-yellow-400 text-[10px] font-black px-4 py-1 rounded-full uppercase italic">RAMADHAN EDITION</span>
-                </div>
-                <div id="statusTag" class="hidden text-[10px] font-black text-orange-600 mt-2 animate-pulse uppercase italic">
-                    ⚡ AUTO-GROW BOOSTER ACTIVE
-                </div>
-            </div>
+<div id="login-screen">
+    <h1 style="font-family:'Fredoka One'; font-size: 4rem; color: white; margin-bottom: 5px;">STEVANA</h1>
+    <p style="color: white; font-weight: 900; margin-bottom: 25px;">@maramadhona Project</p>
+    <button class="btn-google" onclick="loginGoogle()">
+        <img src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png" width="25">
+        LOGIN WITH GOOGLE
+    </button>
+</div>
 
-            <!-- Form -->
-            <div class="space-y-6">
-                <div class="input-group">
-                    <label>Pilih Tipe Server</label>
-                    <select id="waServer" onchange="calculateTotal()" class="input-box text-sm">
-                        <option value="s1">SERVER 1 (Rp 100/Foll)</option>
-                        <option value="s2">SERVER 2 (Rp 200/Foll)</option>
-                    </select>
-                    <div id="serverDesc" class="server-badge badge-s1">
-                        <span>⚠️</span> Server 1: Ekonomis. Bisa drop kapan saja.
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label id="qtyLabel">Jumlah Followers (Min 10)</label>
-                    <input type="number" id="waQty" oninput="calculateTotal()" placeholder="Contoh: 10" class="input-box">
-                </div>
-
-                <div class="input-group">
-                    <label>Link Saluran WhatsApp</label>
-                    <input type="text" id="waLink" placeholder="https://whatsapp.com/channel/..." class="input-box text-sm">
-                </div>
-
-                <!-- Price Display -->
-                <div class="total-container p-6 text-center">
-                    <p class="text-[11px] font-black uppercase opacity-60 mb-1">Estimasi Harga</p>
-                    <h2 id="waTotal" class="text-4xl font-black italic text-emerald-950">Rp 0</h2>
-                </div>
-
-                <button onclick="handleOrder()" class="btn-order">
-                    PESAN SEKARANG 🚀
-                </button>
-
-                <div class="text-center mt-6">
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">
-                        Developed by @maramadhona
-                    </p>
-                    <p class="text-[8px] font-bold text-emerald-700 opacity-50 mt-1">Romash AI Gen 2 • Custom Core</p>
-                </div>
-            </div>
+<div class="app-container" id="app">
+    <div class="header">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <img id="user-pfp" class="user-pp" src="">
+            <span id="user-name" style="font-weight:900; font-size:0.8rem;">Loading...</span>
         </div>
+        <div class="points-badge"><span id="score-val">0</span> PTS</div>
+        <button onclick="showRank()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">🏆</button>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <script>
-        let isAutoGrow = false;
+    <div id="leaderboard">
+        <h2 style="font-family:'Fredoka One'; color:var(--primary); text-align:center;">GLOBAL RANKING</h2>
+        <div id="leaderboard-list" style="flex:1; overflow-y:auto;"></div>
+        <button class="btn-action" style="background:var(--bg);" onclick="closeRank()">CLOSE</button>
+    </div>
 
-        function calculateTotal() {
-            const server = document.getElementById('waServer').value;
-            const qty = parseInt(document.getElementById('waQty').value) || 0;
-            const desc = document.getElementById('serverDesc');
-            let total = 0;
+    <div class="game-content">
+        <div id="lvl-txt" style="font-weight:900; color:var(--primary);">LEVEL 1 / 100</div>
+        <div class="maskot-frame"><img id="m-img" src="https://i.ibb.co/xSr3XPBc/1771380820266-1.jpg"></div>
+        <div class="bubble"><div id="target" style="font-weight:900; color:var(--blue); font-size:1.2rem;">Are you ready?</div></div>
+        <div id="feedback" style="margin-bottom:10px; font-weight:bold; height:20px;"></div>
+        <button class="btn-action btn-listen" onclick="playVoice()">🔊 LISTEN OYEN</button>
+        <button class="btn-action btn-speak" id="btn-mic" onclick="startRec()">🎤 START SPEAKING</button>
+    </div>
 
-            if (server === 's1') {
-                desc.innerHTML = "<span>⚠️</span> Server 1: Ekonomis. Bisa drop kapan saja.";
-                desc.className = "server-badge badge-s1";
-                if (qty >= 10) total = qty * 100;
-            } else {
-                desc.innerHTML = "<span>✅</span> Server 2: Premium. Garansi 7 Hari (Refill).";
-                desc.className = "server-badge badge-s2";
-                if (qty >= 10) total = qty * 200;
-            }
+    <div class="nav-bar">
+        <button onclick="nav(-1)">BACK</button>
+        <button onclick="nav(1)" style="background:var(--blue); color:white;">NEXT</button>
+    </div>
+</div>
 
-            document.getElementById('waTotal').innerText = "Rp " + Math.floor(total).toLocaleString('id-ID');
-        }
+<script>
+    // KONFIGURASI FIREBASE KAMU
+    const firebaseConfig = {
+        apiKey: "AIzaSyBn6vVKvPf74V7UUsWWnTI9uRh5FI_urK0",
+        authDomain: "rzones-c08ee.firebaseapp.com",
+        databaseURL: "https://rzones-c08ee-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "rzones-c08ee",
+        storageBucket: "rzones-c08ee.firebasestorage.app",
+        messagingSenderId: "411533215268",
+        appId: "1:411533215268:web:238dbba66bef4907f0fab1"
+    };
 
-        document.getElementById('headerLogo').onclick = () => {
-            isAutoGrow = !isAutoGrow;
-            document.getElementById('statusTag').classList.toggle('hidden');
-            if(isAutoGrow) {
-                const colors = ['#25d366', '#fbbf24'];
-                confetti({ particleCount: 40, colors: colors, origin: { y: 0.3 } });
-            }
-        };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+    const provider = new firebase.auth.GoogleAuthProvider();
 
-        function handleOrder() {
-            const server = document.getElementById('waServer').value;
-            const qty = parseInt(document.getElementById('waQty').value) || 0;
-            const link = document.getElementById('waLink').value;
-            const price = document.getElementById('waTotal').innerText;
-            const sName = server === 's1' ? "SERVER 1 (NON-GARANSI)" : "SERVER 2 (GARANSI 7 HARI)";
+    let currentUser = null;
+    let userScore = 0;
+    let currentLevel = 0;
 
-            if(qty < 10 || !link) {
-                alert("Isi dulu link saluran sama jumlahnya bos! (Minimal 10)");
-                return;
-            }
+    const questions = ["What is your name?", "How old are you?", "What is your favorite color?"];
+    for(let i=4; i<=100; i++) questions.push("Sentence practice " + i);
 
-            const waAdmin = "62882008519349"; 
-            const msg = `ASSALAMUALAIKUM ADMIN%0AORDER WACHANNEL BOOST 🚀%0A%0A🖥️ SERVER: ${sName}%0A🔢 JUMLAH: ${qty} FOLLOWERS%0A🔗 LINK: ${link}%0A💰 TOTAL: ${price}${isAutoGrow ? '%0A⚡ MODE: AUTO-GROW AKTIF' : ''}%0A%0AProses min!`;
+    // FUNGSI LOGIN (Global agar bisa dipanggil onclick)
+    window.loginGoogle = function() {
+        console.log("Mencoba login...");
+        auth.signInWithPopup(provider).catch(err => {
+            console.error(err);
+            // Jika popup diblokir, gunakan redirect
+            auth.signInWithRedirect(provider);
+        });
+    };
 
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#25d366', '#054c44', '#ffffff']
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            currentUser = user;
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app').style.display = 'flex';
+            document.getElementById('user-pfp').src = user.photoURL;
+            document.getElementById('user-name').innerText = user.displayName;
+            
+            // Sync Database
+            db.ref('users/' + user.uid).on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    userScore = snapshot.val().score || 0;
+                } else {
+                    db.ref('users/' + user.uid).set({ name: user.displayName, photo: user.photoURL, score: 0 });
+                }
+                document.getElementById('score-val').innerText = userScore;
             });
 
-            setTimeout(() => {
-                window.open(`https://wa.me/${waAdmin}?text=${msg}`, '_blank');
-            }, 800);
+            // Suara "Ste vana!"
+            const ut = new SpeechSynthesisUtterance("Ste vana!");
+            ut.pitch = 2; ut.rate = 1.2; window.speechSynthesis.speak(ut);
+            render();
         }
-    </script>
+    });
+
+    function render() {
+        document.getElementById('target').innerText = questions[currentLevel];
+        document.getElementById('lvl-txt').innerText = `LEVEL ${currentLevel + 1} / 100`;
+        document.getElementById('feedback').innerText = "";
+    }
+
+    window.playVoice = () => {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(questions[currentLevel]);
+        u.lang = 'en-US'; window.speechSynthesis.speak(u);
+    };
+
+    window.startRec = () => {
+        const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if(!Rec) return alert("Mic Error!");
+        const r = new Rec(); r.lang = 'en-US';
+        r.onstart = () => document.getElementById('btn-mic').classList.add('active');
+        r.onresult = (e) => {
+            document.getElementById('btn-mic').classList.remove('active');
+            const say = e.results[0][0].transcript.toLowerCase();
+            if(say.includes(questions[currentLevel].toLowerCase().replace(/[^\w\s]/g, ""))) {
+                userScore += 2;
+                db.ref('users/' + currentUser.uid).update({ score: userScore });
+                document.getElementById('feedback').innerText = "CORRECT! +2";
+            }
+        };
+        r.start();
+    };
+
+    window.nav = (d) => { currentLevel = Math.max(0, Math.min(99, currentLevel + d)); render(); };
+    window.showRank = () => {
+        document.getElementById('leaderboard').style.display = 'flex';
+        db.ref('users').orderByChild('score').limitToLast(10).on('value', (snap) => {
+            let html = "";
+            let users = [];
+            snap.forEach(child => { users.push(child.val()); });
+            users.reverse().forEach((p, i) => {
+                html += `<div class="rank-item"><span>#${i+1} ${p.name}</span><span>${p.score} PTS</span></div>`;
+            });
+            document.getElementById('leaderboard-list').innerHTML = html;
+        });
+    };
+    window.closeRank = () => { document.getElementById('leaderboard').style.display = 'none'; };
+</script>
 </body>
 </html>
