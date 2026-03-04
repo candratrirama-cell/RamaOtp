@@ -1,180 +1,348 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stevana Pro Fix - GoR 1.1 Lock</title>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GoR 1.1 - Cloud OS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap');
-        :root { --primary: #FF9F43; --success: #2ECC71; --danger: #FF7675; --blue: #0984E3; --bg: #6C5CE7; }
-        body { font-family: 'Nunito', sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
-        #login-screen { position: fixed; inset: 0; background: var(--primary); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .btn-google { background: white; color: #444; padding: 15px 30px; border-radius: 50px; border: none; font-weight: 900; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .app-container { background: white; width: 92%; max-width: 450px; height: 90vh; border-radius: 40px; position: relative; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
-        .header { background: #f1f2f6; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #dfe4ea; }
-        .user-pp { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); }
-        .points-badge { background: var(--success); color: white; padding: 5px 12px; border-radius: 15px; font-weight: 900; }
-        #leaderboard { position: absolute; inset: 0; background: white; z-index: 100; display: none; flex-direction: column; padding: 20px; }
-        .rank-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
-        .game-content { flex: 1; padding: 20px; text-align: center; overflow-y: auto; }
-        .maskot-frame { width: 120px; height: 120px; margin: 10px auto; border: 5px solid var(--primary); border-radius: 50%; overflow: hidden; }
-        .maskot-frame img { width: 100%; height: 100%; object-fit: contain; }
-        .bubble { background: #f9f9f9; padding: 20px; border-radius: 25px; border: 3px solid #eee; margin: 15px 0; min-height: 80px; }
-        .btn-action { width: 100%; padding: 18px; border: none; border-radius: 25px; font-size: 1.1rem; font-weight: 900; color: white; margin-bottom: 10px; cursor: pointer; }
-        .btn-listen { background: #00b894; box-shadow: 0 5px 0 #00896f; }
-        .btn-speak { background: var(--primary); box-shadow: 0 5px 0 #e17055; }
-        .btn-speak.active { background: var(--danger); transform: translateY(5px); box-shadow: none; }
-        .nav-bar { display: flex; gap: 10px; padding: 10px 20px 20px; }
-        .nav-bar button { flex: 1; padding: 12px; border: none; border-radius: 15px; font-weight: 900; cursor: pointer; }
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+        :root { --primary: #2563eb; --bg: #f8fafc; }
+        body { background: var(--bg); color: #0f172a; font-family: 'Plus Jakarta Sans', sans-serif; transition: 0.3s; }
+        .glass { background: rgba(255,255,255,0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.3); }
+        .hidden { display: none !important; }
+        #visual-console { background: #020617; color: #38bdf8; font-family: 'JetBrains Mono'; font-size: 10px; display: none; }
+        .card-project { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        .card-project:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); border-color: var(--primary); }
+        textarea { font-family: 'JetBrains Mono', monospace; font-size: 14px !important; resize: none; }
+        /* 404 Style */
+        .not-found-bg { background: radial-gradient(circle, #f8fafc 0%, #e2e8f0 100%); }
     </style>
 </head>
 <body>
 
-<div id="login-screen">
-    <h1 style="font-family:'Fredoka One'; font-size: 4rem; color: white; margin-bottom: 5px;">STEVANA</h1>
-    <p style="color: white; font-weight: 900; margin-bottom: 25px;">@maramadhona Project</p>
-    <button class="btn-google" onclick="loginGoogle()">
-        <img src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png" width="25">
-        LOGIN WITH GOOGLE
-    </button>
-</div>
+    <input type="file" id="file-picker" class="hidden" accept=".html">
 
-<div class="app-container" id="app">
-    <div class="header">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <img id="user-pfp" class="user-pp" src="">
-            <span id="user-name" style="font-weight:900; font-size:0.8rem;">Loading...</span>
+    <div id="render-screen" class="min-h-screen flex items-center justify-center hidden">
+        <div id="loader" class="text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 mx-auto mb-4"></div>
+            <p class="text-blue-900 font-bold text-xs tracking-widest uppercase">GoR 1.1 Resolving...</p>
         </div>
-        <div class="points-badge"><span id="score-val">0</span> PTS</div>
-        <button onclick="showRank()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">🏆</button>
+        <div id="error-404" class="hidden text-center p-6">
+            <h1 class="text-9xl font-black text-slate-200">404</h1>
+            <p class="text-2xl font-bold text-slate-800 -mt-8 mb-4">Project Not Found</p>
+            <p class="text-slate-500 mb-8">Maaf Wak, alamat <span id="missing-sub" class="text-blue-600 font-mono"></span> belum terdaftar di RZone.</p>
+            <a href="https://rzone.web.id" class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-blue-200">Bikin Project Sendiri</a>
+        </div>
     </div>
 
-    <div id="leaderboard">
-        <h2 style="font-family:'Fredoka One'; color:var(--primary); text-align:center;">GLOBAL RANKING</h2>
-        <div id="leaderboard-list" style="flex:1; overflow-y:auto;"></div>
-        <button class="btn-action" style="background:var(--bg);" onclick="closeRank()">CLOSE</button>
-    </div>
+    <div id="dashboard-screen" class="hidden min-h-screen">
+        
+        <div id="login-ui" class="min-h-screen flex items-center justify-center p-6">
+            <div class="glass p-10 rounded-[3rem] w-full max-w-sm text-center shadow-2xl border-white">
+                <div class="w-20 h-20 bg-blue-600 rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-xl shadow-blue-200">
+                    <span class="text-white text-4xl font-black italic">R</span>
+                </div>
+                <h1 class="text-3xl font-extrabold text-slate-900 mb-1">Welcome Admin</h1>
+                <p class="text-xs font-bold text-slate-400 mb-8 uppercase tracking-widest">Version GoR 1.1</p>
+                <input type="password" id="pin" placeholder="••••••" class="w-full p-4 bg-white border-2 border-slate-100 rounded-2xl mb-4 text-center text-2xl outline-none focus:border-blue-500 transition-all">
+                <button onclick="handleLogin()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black shadow-lg hover:bg-blue-700 active:scale-95 transition-all">UNLOCK SYSTEM</button>
+            </div>
+        </div>
 
-    <div class="game-content">
-        <div id="lvl-txt" style="font-weight:900; color:var(--primary);">LEVEL 1 / 100</div>
-        <div class="maskot-frame"><img id="m-img" src="https://i.ibb.co/xSr3XPBc/1771380820266-1.jpg"></div>
-        <div class="bubble"><div id="target" style="font-weight:900; color:var(--blue); font-size:1.2rem;">Are you ready?</div></div>
-        <div id="feedback" style="margin-bottom:10px; font-weight:bold; height:20px;"></div>
-        <button class="btn-action btn-listen" onclick="playVoice()">🔊 LISTEN OYEN</button>
-        <button class="btn-action btn-speak" id="btn-mic" onclick="startRec()">🎤 START SPEAKING</button>
-    </div>
-
-    <div class="nav-bar">
-        <button onclick="nav(-1)">BACK</button>
-        <button onclick="nav(1)" style="background:var(--blue); color:white;">NEXT</button>
-    </div>
-</div>
-
-<script>
-    // KONFIGURASI FIREBASE KAMU
-    const firebaseConfig = {
-        apiKey: "AIzaSyBn6vVKvPf74V7UUsWWnTI9uRh5FI_urK0",
-        authDomain: "rzones-c08ee.firebaseapp.com",
-        databaseURL: "https://rzones-c08ee-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "rzones-c08ee",
-        storageBucket: "rzones-c08ee.firebasestorage.app",
-        messagingSenderId: "411533215268",
-        appId: "1:411533215268:web:238dbba66bef4907f0fab1"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
-    const provider = new firebase.auth.GoogleAuthProvider();
-
-    let currentUser = null;
-    let userScore = 0;
-    let currentLevel = 0;
-
-    const questions = ["What is your name?", "How old are you?", "What is your favorite color?"];
-    for(let i=4; i<=100; i++) questions.push("Sentence practice " + i);
-
-    // FUNGSI LOGIN (Global agar bisa dipanggil onclick)
-    window.loginGoogle = function() {
-        console.log("Mencoba login...");
-        auth.signInWithPopup(provider).catch(err => {
-            console.error(err);
-            // Jika popup diblokir, gunakan redirect
-            auth.signInWithRedirect(provider);
-        });
-    };
-
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            currentUser = user;
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('app').style.display = 'flex';
-            document.getElementById('user-pfp').src = user.photoURL;
-            document.getElementById('user-name').innerText = user.displayName;
+        <div id="main-ui" class="hidden p-6 lg:p-12 max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+                <div>
+                    <h2 class="text-5xl font-black text-slate-900 tracking-tighter italic">REPOS</h2>
+                    <p class="text-slate-500 font-medium">Monitoring <span id="total-projects" class="text-blue-600 font-bold">0</span> active deployments</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="showQuickStats()" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 font-bold text-xs">📊 STATS</button>
+                    <button onclick="createProject()" class="bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold text-xs shadow-xl active:scale-95 transition-all">+ NEW DEPLOY</button>
+                </div>
+            </div>
             
-            // Sync Database
-            db.ref('users/' + user.uid).on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    userScore = snapshot.val().score || 0;
-                } else {
-                    db.ref('users/' + user.uid).set({ name: user.displayName, photo: user.photoURL, score: 0 });
-                }
-                document.getElementById('score-val').innerText = userScore;
-            });
+            <div id="project-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-32"></div>
+        </div>
 
-            // Suara "Ste vana!"
-            const ut = new SpeechSynthesisUtterance("Ste vana!");
-            ut.pitch = 2; ut.rate = 1.2; window.speechSynthesis.speak(ut);
-            render();
-        }
-    });
+        <div id="editor-ui" class="hidden p-4 lg:p-8">
+            <div class="max-w-screen-2xl mx-auto">
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center gap-4">
+                        <button onclick="location.reload()" class="p-4 bg-white rounded-2xl shadow-sm text-slate-400 font-bold hover:text-blue-600">←</button>
+                        <div>
+                            <h2 id="active-repo-name" class="text-2xl font-black text-slate-900 italic uppercase"></h2>
+                            <div class="flex items-center gap-3">
+                                <span class="flex items-center gap-1 text-[10px] font-bold text-green-500 bg-green-50 px-2 py-0.5 rounded-full">
+                                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping"></span> LIVE
+                                </span>
+                                <p id="active-repo-url" class="text-xs text-blue-500 font-mono"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <div class="bg-white px-4 py-2 rounded-xl border border-slate-100 text-center">
+                            <p class="text-[10px] text-slate-400 font-bold uppercase">Traffic</p>
+                            <p id="repo-traffic" class="text-sm font-black text-slate-900">0</p>
+                        </div>
+                    </div>
+                </div>
 
-    function render() {
-        document.getElementById('target').innerText = questions[currentLevel];
-        document.getElementById('lvl-txt').innerText = `LEVEL ${currentLevel + 1} / 100`;
-        document.getElementById('feedback').innerText = "";
-    }
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-3 space-y-4">
+                        <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                            <p class="text-[10px] font-black text-slate-400 mb-4 tracking-widest uppercase">Cloud Explorer</p>
+                            <div id="file-sidebar" class="space-y-2"></div>
+                            <button onclick="triggerFilePicker()" class="w-full mt-6 p-4 border-2 border-dashed border-blue-100 rounded-2xl text-blue-600 text-xs font-black hover:bg-blue-50 transition-all">
+                                IMPORT INDEX.HTML
+                            </button>
+                        </div>
+                        <button onclick="deleteCurrentRepo()" class="w-full p-4 bg-red-50 text-red-500 rounded-2xl text-xs font-black border border-red-100 hover:bg-red-500 hover:text-white transition-all">TERMINATE REPO</button>
+                    </div>
 
-    window.playVoice = () => {
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(questions[currentLevel]);
-        u.lang = 'en-US'; window.speechSynthesis.speak(u);
-    };
+                    <div class="lg:col-span-9">
+                        <div id="editor-area" class="hidden space-y-4">
+                            <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-50">
+                                <div class="flex gap-4 items-center">
+                                    <span id="editing-name" class="text-xs font-mono font-bold text-slate-400"></span>
+                                    <span id="save-indicator" class="text-[10px] font-bold text-slate-300 italic">Ready</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="saveCurrentFile()" class="bg-blue-600 text-white px-8 py-2 rounded-xl text-xs font-black shadow-lg shadow-blue-100 active:scale-95 transition-all">SAVE CLOUD</button>
+                                    <button id="btn-preview" class="bg-slate-900 text-white px-6 py-2 rounded-xl text-xs font-black active:scale-95 transition-all">VIEW LIVE</button>
+                                </div>
+                            </div>
+                            <textarea id="code-input" class="w-full h-[65vh] p-8 rounded-[2.5rem] border-2 border-white shadow-2xl focus:outline-none focus:border-blue-100 bg-white" spellcheck="false" oninput="markUnsaved()"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    window.startRec = () => {
-        const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if(!Rec) return alert("Mic Error!");
-        const r = new Rec(); r.lang = 'en-US';
-        r.onstart = () => document.getElementById('btn-mic').classList.add('active');
-        r.onresult = (e) => {
-            document.getElementById('btn-mic').classList.remove('active');
-            const say = e.results[0][0].transcript.toLowerCase();
-            if(say.includes(questions[currentLevel].toLowerCase().replace(/[^\w\s]/g, ""))) {
-                userScore += 2;
-                db.ref('users/' + currentUser.uid).update({ score: userScore });
-                document.getElementById('feedback').innerText = "CORRECT! +2";
+    <div id="visual-console" class="fixed bottom-0 left-0 w-full h-28 overflow-y-auto p-4 z-[9999] border-t border-slate-800">
+        <div id="console-logs" class="space-y-1">Cloud Console GoR 1.1 Ready...</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, push, onValue, update, get, query, orderByChild, equalTo, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBn6vVKvPf74V7UUsWWnTI9uRh5FI_urK0",
+            authDomain: "rzones-c08ee.firebaseapp.com",
+            databaseURL: "https://rzones-c08ee-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "rzones-c08ee",
+            storageBucket: "rzones-c08ee.firebasestorage.app",
+            messagingSenderId: "411533215268",
+            appId: "1:411533215268:web:238dbba66bef4907f0fab1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        window.vlog = (msg, type = 'info') => {
+            const color = type === 'error' ? 'text-red-400' : (type === 'success' ? 'text-green-400' : 'text-blue-400');
+            document.getElementById('console-logs').innerHTML = `<div><span class="${color}">[${new Date().toLocaleTimeString()}]</span> ${msg}</div>` + document.getElementById('console-logs').innerHTML;
+        };
+
+        const host = window.location.hostname;
+        const isDashboard = host === "rzone.web.id" || host === "www.rzone.web.id" || host.includes("vercel.app") || host.includes("localhost");
+
+        window.onload = () => {
+            if (!isDashboard) {
+                document.getElementById('render-screen').classList.remove('hidden');
+                renderSite(host.split('.')[0]);
+            } else {
+                document.getElementById('dashboard-screen').classList.remove('hidden');
             }
         };
-        r.start();
-    };
 
-    window.nav = (d) => { currentLevel = Math.max(0, Math.min(99, currentLevel + d)); render(); };
-    window.showRank = () => {
-        document.getElementById('leaderboard').style.display = 'flex';
-        db.ref('users').orderByChild('score').limitToLast(10).on('value', (snap) => {
-            let html = "";
-            let users = [];
-            snap.forEach(child => { users.push(child.val()); });
-            users.reverse().forEach((p, i) => {
-                html += `<div class="rank-item"><span>#${i+1} ${p.name}</span><span>${p.score} PTS</span></div>`;
+        // --- TRAFFIC & RENDERER (With 404 Support) ---
+        async function renderSite(sub) {
+            try {
+                const q = query(ref(db, 'repositories'), orderByChild('name'), equalTo(sub));
+                const snap = await get(q);
+                
+                if (snap.exists()) {
+                    const repoId = Object.keys(snap.val())[0];
+                    const data = snap.val()[repoId];
+                    
+                    // Update Traffic
+                    const currentTraffic = data.traffic || 0;
+                    await update(ref(db, `repositories/${repoId}`), { traffic: currentTraffic + 1 });
+                    
+                    const files = data.files || {};
+                    const index = Object.values(files).find(f => f.name === 'index.html');
+                    
+                    if (index) {
+                        document.open();
+                        document.write(index.content);
+                        document.close();
+                    } else {
+                        show404(sub);
+                    }
+                } else {
+                    show404(sub);
+                }
+            } catch(e) { 
+                vlog(e.message, "error"); 
+                show404(sub);
+            }
+        }
+
+        function show404(sub) {
+            document.getElementById('loader').classList.add('hidden');
+            document.getElementById('error-404').classList.remove('hidden');
+            document.getElementById('missing-sub').innerText = sub + ".rzone.web.id";
+            document.body.classList.add('not-found-bg');
+        }
+
+        // --- ADMIN AUTH ---
+        window.handleLogin = () => {
+            if(document.getElementById('pin').value === "190713") {
+                document.getElementById('visual-console').style.display = 'block';
+                document.getElementById('login-ui').classList.add('hidden');
+                document.getElementById('main-ui').classList.remove('hidden');
+                loadAllProjects();
+                vlog("Admin System Unlocked", "success");
+            } else { alert("ACCESS DENIED"); }
+        };
+
+        // --- REPO MANAGEMENT ---
+        let activeRepoId = null;
+        let activeFileId = null;
+
+        function loadAllProjects() {
+            onValue(ref(db, 'repositories'), (snap) => {
+                const list = document.getElementById('project-list');
+                list.innerHTML = '';
+                if(snap.exists()) {
+                    const repos = snap.val();
+                    document.getElementById('total-projects').innerText = Object.keys(repos).length;
+                    Object.entries(repos).forEach(([id, repo]) => {
+                        list.innerHTML += `
+                            <div class="bg-white p-8 rounded-[2.5rem] border border-slate-50 card-project" onclick="openProject('${id}', '${repo.name}')">
+                                <div class="flex justify-between items-start mb-6">
+                                    <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center font-black text-2xl">${repo.name[0].toUpperCase()}</div>
+                                    <div class="text-right">
+                                        <p class="text-[10px] font-black text-slate-300 uppercase">Traffic</p>
+                                        <p class="text-lg font-black text-slate-900">${repo.traffic || 0}</p>
+                                    </div>
+                                </div>
+                                <h3 class="text-2xl font-black text-slate-900 italic uppercase tracking-tighter">${repo.name}</h3>
+                                <p class="text-xs font-mono text-blue-500 mt-1">${repo.name}.rzone.web.id</p>
+                            </div>
+                        `;
+                    });
+                }
             });
-            document.getElementById('leaderboard-list').innerHTML = html;
-        });
-    };
-    window.closeRank = () => { document.getElementById('leaderboard').style.display = 'none'; };
-</script>
+        }
+
+        window.openProject = async (id, name) => {
+            activeRepoId = id;
+            const snap = await get(ref(db, `repositories/${id}`));
+            const data = snap.val();
+            
+            document.getElementById('main-ui').classList.add('hidden');
+            document.getElementById('editor-ui').classList.remove('hidden');
+            document.getElementById('active-repo-name').innerText = name;
+            document.getElementById('active-repo-url').innerText = `${name}.rzone.web.id`;
+            document.getElementById('repo-traffic').innerText = data.traffic || 0;
+            document.getElementById('btn-preview').onclick = () => window.open(`http://${name}.rzone.web.id`, '_blank');
+            loadRepoFiles(id);
+            vlog("Repo " + name + " loaded", "info");
+        };
+
+        // --- FILE SYSTEM (With index.html Validation) ---
+        window.triggerFilePicker = () => document.getElementById('file-picker').click();
+        document.getElementById('file-picker').onchange = (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+            if(file.name !== "index.html") {
+                vlog("Upload Error: Must be index.html", "error");
+                alert("Wajib index.html!");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = async (ev) => {
+                vlog("Cloud Syncing index.html...", "info");
+                await push(ref(db, `repositories/${activeRepoId}/files`), {
+                    name: "index.html",
+                    content: ev.target.result
+                });
+                vlog("Deployment Successful", "success");
+            };
+            reader.readAsText(file);
+        };
+
+        function loadRepoFiles(repoId) {
+            onValue(ref(db, `repositories/${repoId}/files`), (snap) => {
+                const sidebar = document.getElementById('file-sidebar');
+                sidebar.innerHTML = '';
+                if(snap.exists()) {
+                    Object.entries(snap.val()).forEach(([fid, file]) => {
+                        sidebar.innerHTML += `
+                            <div class="p-4 bg-slate-50 rounded-2xl flex justify-between items-center cursor-pointer hover:bg-blue-50 transition-all" onclick="loadEditor('${fid}', '${file.name}', \`${b64(file.content)}\`)">
+                                <span class="text-xs font-bold text-slate-600 uppercase italic">📄 ${file.name}</span>
+                                <button onclick="event.stopPropagation(); deleteFile('${fid}')" class="text-red-400 hover:text-red-600 text-[10px] font-black">X</button>
+                            </div>
+                        `;
+                    });
+                }
+            });
+        }
+
+        window.loadEditor = (fid, name, contentB64) => {
+            activeFileId = fid;
+            document.getElementById('editor-area').classList.remove('hidden');
+            document.getElementById('editing-name').innerText = name.toUpperCase();
+            document.getElementById('code-input').value = b64_dec(contentB64);
+            document.getElementById('save-indicator').innerText = "Ready";
+            document.getElementById('save-indicator').className = "text-[10px] font-bold text-slate-300 italic";
+        };
+
+        window.markUnsaved = () => {
+            document.getElementById('save-indicator').innerText = "● Unsaved Changes";
+            document.getElementById('save-indicator').className = "text-[10px] font-bold text-orange-400 italic";
+        };
+
+        window.saveCurrentFile = async () => {
+            document.getElementById('save-indicator').innerText = "○ Syncing Cloud...";
+            const content = document.getElementById('code-input').value;
+            await update(ref(db, `repositories/${activeRepoId}/files/${activeFileId}`), { content: content });
+            document.getElementById('save-indicator').innerText = "● Cloud Updated";
+            document.getElementById('save-indicator').className = "text-[10px] font-bold text-green-500 italic";
+            vlog("Manual save triggered", "success");
+        };
+
+        window.deleteCurrentRepo = async () => {
+            if(confirm("Hapus seluruh project dan data traffic?")) {
+                await remove(ref(db, `repositories/${activeRepoId}`));
+                location.reload();
+            }
+        };
+
+        window.deleteFile = async (fid) => {
+            if(confirm("Hapus file?")) {
+                await remove(ref(db, `repositories/${activeRepoId}/files/${fid}`));
+                document.getElementById('editor-area').classList.add('hidden');
+            }
+        };
+
+        window.createProject = async () => {
+            const n = prompt("Project Name:");
+            if(n) {
+                const c = n.toLowerCase().replace(/\s/g, '-');
+                await set(push(ref(db, 'repositories')), { name: c, traffic: 0, createdAt: Date.now() });
+                vlog("New Endpoint: " + c, "success");
+            }
+        };
+
+        // --- HELPERS ---
+        function b64(s) { return btoa(unescape(encodeURIComponent(s))); }
+        function b64_dec(s) { return decodeURIComponent(escape(atob(s))); }
+
+    </script>
 </body>
 </html>
