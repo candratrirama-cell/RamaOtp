@@ -3,79 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rtysafe Central - Gate</title>
+    <title>rtysafe - Gate</title>
     <style>
-        :root { --bg: #000; --accent: #00ff41; --text: #fff; }
-        body { background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .box { border: 2px solid var(--accent); padding: 30px; text-align: center; box-shadow: 6px 6px 0px var(--accent); background: #111; width: 90%; max-width: 350px; }
-        .bar { height: 4px; width: 100%; background: #222; margin: 20px 0; overflow: hidden; }
+        :root { --accent: #00ff41; --bg: #000; }
+        body { background: var(--bg); color: #fff; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { border: 2px solid var(--accent); padding: 30px; text-align: center; box-shadow: 6px 6px 0px var(--accent); background: #111; width: 320px; }
+        .bar { height: 4px; width: 100%; background: #222; margin: 20px 0; position: relative; }
         .prog { height: 100%; background: var(--accent); width: 0%; transition: width 0.1s linear; }
-        #captcha { display: none; border-top: 1px dashed var(--accent); padding-top: 15px; }
-        input { background: none; border: 2px solid var(--accent); color: var(--accent); padding: 8px; width: 60px; text-align: center; font-size: 1.2rem; outline: none; }
-        button { background: var(--accent); border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
+        #captcha { display: none; margin-top: 15px; border-top: 1px dashed var(--accent); padding-top: 15px; }
+        input { background: none; border: 2px solid var(--accent); color: var(--accent); padding: 8px; width: 60px; text-align: center; font-size: 1.2rem; outline: none; margin-bottom: 10px; }
+        button { background: var(--accent); border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body>
     <div class="box">
-        <h2 id="msg">SYSTEM CHECKING...</h2>
+        <h2 id="msg">rtysafe CHECKING</h2>
         <div class="bar"><div id="p" class="prog"></div></div>
         <div id="captcha">
-            <p style="font-size: 0.8rem; color: #ff4141;">Traffic Limit Reached!</p>
-            <p id="q" style="font-size: 1.4rem; margin: 10px 0;"></p>
+            <p id="q" style="font-size: 1.2rem; margin-bottom: 10px;"></p>
             <input type="number" id="ans">
-            <br><button onclick="check()">Verify Now</button>
+            <br><button onclick="check()">Verify</button>
         </div>
     </div>
 
 <script>
     const params = new URLSearchParams(window.location.search);
-    const targetUrl = params.get('redirect'); // URL asal yang minta verif
+    const target = params.get('redirect');
 
-    // Logika 7 kali per menit
     function isRateLimited() {
         const now = Date.now();
-        let logs = JSON.parse(localStorage.getItem('rtys_global_logs') || "[]");
+        let logs = JSON.parse(localStorage.getItem('rtys_logs') || "[]");
         logs = logs.filter(t => (now - t) < 60000);
-        localStorage.setItem('rtys_global_logs', JSON.stringify(logs));
+        localStorage.setItem('rtys_logs', JSON.stringify(logs));
         return logs.length >= 7;
     }
 
     let progress = 0;
-    const interval = setInterval(() => {
-        progress += 1.43;
+    const inv = setInterval(() => {
+        progress += 1.43; // Menuju 100% dalam 7 detik
         document.getElementById('p').style.width = Math.min(progress, 100) + "%";
         if (progress >= 100) {
-            clearInterval(interval);
+            clearInterval(inv);
             if (isRateLimited()) {
-                showCaptcha();
+                document.getElementById('msg').innerText = "HIGH TRAFFIC";
+                document.getElementById('captcha').style.display = 'block';
+                window.n1 = Math.floor(Math.random()*9)+1;
+                window.n2 = Math.floor(Math.random()*9)+1;
+                document.getElementById('q').innerText = `${n1} + ${n2} = ?`;
             } else { finish(); }
         }
     }, 100);
 
-    function showCaptcha() {
-        document.getElementById('msg').innerText = "HUMAN CHECK";
-        document.getElementById('captcha').style.display = 'block';
-        window.n1 = Math.floor(Math.random() * 10) + 1;
-        window.n2 = Math.floor(Math.random() * 10) + 1;
-        document.getElementById('q').innerText = `${n1} + ${n2} = ?`;
-    }
-
     function check() {
-        const val = parseInt(document.getElementById('ans').value);
-        if (val === (window.n1 + window.n2)) finish();
-        else { alert("Wrong!"); showCaptcha(); }
+        if (parseInt(document.getElementById('ans').value) === (window.n1 + window.n2)) finish();
+        else { alert("Salah!"); location.reload(); }
     }
 
     function finish() {
-        // Simpan log keberhasilan
-        let logs = JSON.parse(localStorage.getItem('rtys_global_logs') || "[]");
+        let logs = JSON.parse(localStorage.getItem('rtys_logs') || "[]");
         logs.push(Date.now());
-        localStorage.setItem('rtys_global_logs', JSON.stringify(logs));
+        localStorage.setItem('rtys_logs', JSON.stringify(logs));
 
-        // Kirim balik ke website asal dengan status sukses
-        const returnUrl = new URL(targetUrl);
-        returnUrl.searchParams.set('rtys_status', 'verified');
-        window.location.href = returnUrl.toString();
+        if (target) {
+            const dest = new URL(decodeURIComponent(target));
+            dest.searchParams.set('rtys_auth', 'success');
+            window.location.href = dest.toString();
+        }
     }
 </script>
 </body>
