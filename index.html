@@ -2,338 +2,81 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GoR 1.1 - Midnight Frost OS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rtysafe Central - Gate</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Inter:wght@400;700;900&display=swap');
-        
-        :root { 
-            --navy: #0a192f; 
-            --frost: #f8fafc; 
-            --accent: #3b82f6; 
-        }
-
-        body { 
-            background: var(--frost); 
-            color: var(--navy); 
-            font-family: 'Inter', sans-serif; 
-            margin: 0; 
-            overflow-x: hidden;
-        }
-
-        /* TEMA BARU: MIDNIGHT FROST */
-        .admin-bg { background: linear-gradient(135deg, #0a192f 0%, #112240 100%); }
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
-        .navy-card { background: #0a192f; color: white; }
-        
-        .editor-container {
-            font-family: 'JetBrains Mono', monospace;
-            background: #ffffff !important;
-            color: #1e293b !important;
-            border: 2px solid #e2e8f0;
-        }
-
-        #visual-console { 
-            background: #020617; 
-            color: #10b981; 
-            font-family: 'JetBrains Mono'; 
-            font-size: 11px; 
-            display: none; 
-            border-top: 2px solid #3b82f6;
-        }
-
-        .hidden { display: none !important; }
-        .btn-frost { background: #3b82f6; color: white; transition: 0.3s; }
-        .btn-frost:hover { background: #2563eb; transform: translateY(-2px); shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.5); }
-        
-        /* 404 STYLING */
-        .error-page { background: #f1f5f9; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; }
+        :root { --bg: #000; --accent: #00ff41; --text: #fff; }
+        body { background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { border: 2px solid var(--accent); padding: 30px; text-align: center; box-shadow: 6px 6px 0px var(--accent); background: #111; width: 90%; max-width: 350px; }
+        .bar { height: 4px; width: 100%; background: #222; margin: 20px 0; overflow: hidden; }
+        .prog { height: 100%; background: var(--accent); width: 0%; transition: width 0.1s linear; }
+        #captcha { display: none; border-top: 1px dashed var(--accent); padding-top: 15px; }
+        input { background: none; border: 2px solid var(--accent); color: var(--accent); padding: 8px; width: 60px; text-align: center; font-size: 1.2rem; outline: none; }
+        button { background: var(--accent); border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
     </style>
 </head>
 <body>
-
-    <input type="file" id="file-picker" class="hidden" accept=".html">
-
-    <div id="system-resolver" class="min-h-screen flex items-center justify-center">
-        <div id="loading-box" class="text-center">
-            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mx-auto mb-6"></div>
-            <h2 class="text-xl font-black tracking-tighter italic">GoR 1.1 RESOLVING...</h2>
-        </div>
-
-        <div id="error-404" class="hidden max-w-md p-8">
-            <h1 class="text-9xl font-black text-blue-600/10 mb-[-60px]">404</h1>
-            <h2 class="text-4xl font-black text-navy mb-4 italic">LOST IN CLOUD?</h2>
-            <p class="text-slate-500 mb-8 font-medium">Domain <span id="bad-sub" class="text-blue-600 font-bold"></span> tidak terdaftar di sistem kami.</p>
-            <a href="https://rzone.web.id" class="inline-block bg-navy text-white px-10 py-4 rounded-full font-black text-sm tracking-widest hover:scale-105 transition">BACK TO HOME</a>
+    <div class="box">
+        <h2 id="msg">SYSTEM CHECKING...</h2>
+        <div class="bar"><div id="p" class="prog"></div></div>
+        <div id="captcha">
+            <p style="font-size: 0.8rem; color: #ff4141;">Traffic Limit Reached!</p>
+            <p id="q" style="font-size: 1.4rem; margin: 10px 0;"></p>
+            <input type="number" id="ans">
+            <br><button onclick="check()">Verify Now</button>
         </div>
     </div>
 
-    <div id="dashboard-root" class="hidden min-h-screen">
-        
-        <div id="login-ui" class="min-h-screen flex items-center justify-center p-6 admin-bg">
-            <div class="glass-card p-12 rounded-[3rem] w-full max-w-sm text-center shadow-2xl">
-                <div class="w-20 h-20 bg-blue-600 rounded-3xl mx-auto mb-8 flex items-center justify-center shadow-2xl rotate-3">
-                    <span class="text-white text-4xl font-black italic">-R-</span>
-                </div>
-                <h1 class="text-3xl font-black text-navy mb-2 tracking-tighter">ACCESS PORTAL</h1>
-                <p class="text-[10px] font-black text-slate-400 mb-8 uppercase tracking-[0.4em]">Midnight Frost Edition</p>
-                <input type="password" id="pin" placeholder="ENTER PIN" class="w-full p-5 bg-slate-100 border-2 border-transparent rounded-2xl mb-4 text-center text-2xl font-bold focus:border-blue-600 outline-none transition-all">
-                <button onclick="handleLogin()" class="w-full btn-frost py-5 rounded-2xl font-black text-sm tracking-widest shadow-xl">BOOT SYSTEM</button>
-            </div>
-        </div>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const targetUrl = params.get('redirect'); // URL asal yang minta verif
 
-        <div id="main-ui" class="hidden">
-            <nav class="p-8 flex justify-between items-center max-w-7xl mx-auto">
-                <div>
-                    <h2 class="text-4xl font-black text-navy italic tracking-tighter uppercase">Repositories</h2>
-                    <p class="text-xs font-bold text-blue-600 uppercase mt-1">Status: <span id="proj-count">0</span> Active Endpoints</p>
-                </div>
-                <button onclick="createProject()" class="bg-navy text-white px-8 py-4 rounded-2xl font-black text-xs hover:bg-blue-600 transition shadow-xl">+ NEW DEPLOY</button>
-            </nav>
+    // Logika 7 kali per menit
+    function isRateLimited() {
+        const now = Date.now();
+        let logs = JSON.parse(localStorage.getItem('rtys_global_logs') || "[]");
+        logs = logs.filter(t => (now - t) < 60000);
+        localStorage.setItem('rtys_global_logs', JSON.stringify(logs));
+        return logs.length >= 7;
+    }
 
-            <div id="project-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-8 max-w-7xl mx-auto pb-40"></div>
-        </div>
-
-        <div id="editor-ui" class="hidden p-6 lg:p-12">
-            <div class="max-w-screen-2xl mx-auto">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
-                    <div class="flex items-center gap-6">
-                        <button onclick="location.reload()" class="w-14 h-14 bg-white rounded-2xl shadow-sm text-navy font-black text-xl flex items-center justify-center border border-slate-200">←</button>
-                        <div>
-                            <h2 id="active-repo-name" class="text-3xl font-black text-navy italic uppercase"></h2>
-                            <p id="active-repo-url" class="text-sm font-mono text-blue-600 font-bold"></p>
-                        </div>
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="bg-white px-6 py-3 rounded-2xl border border-slate-200 flex flex-col items-center">
-                            <span class="text-[9px] font-black text-slate-400 uppercase">Traffic</span>
-                            <span id="repo-traffic" class="text-xl font-black text-navy">0</span>
-                        </div>
-                        <button id="btn-live" class="bg-navy text-white px-8 py-3 rounded-2xl font-black text-xs self-center">LIVE VIEW</button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    <div class="lg:col-span-3 space-y-4">
-                        <div class="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm">
-                            <p class="text-[10px] font-black text-slate-400 mb-6 uppercase tracking-widest text-center">Cloud Files</p>
-                            <div id="file-sidebar" class="space-y-3"></div>
-                            <button onclick="triggerFilePicker()" class="w-full mt-8 p-5 border-2 border-dashed border-blue-200 rounded-3xl text-blue-600 text-xs font-black hover:bg-blue-50 transition">IMPORT INDEX.HTML</button>
-                        </div>
-                        <button onclick="deleteRepo()" class="w-full p-5 bg-red-50 text-red-500 rounded-3xl text-[10px] font-black tracking-widest hover:bg-red-500 hover:text-white transition">DESTROY REPOSITORY</button>
-                    </div>
-
-                    <div class="lg:col-span-9">
-                        <div id="editor-area" class="hidden space-y-4">
-                            <div class="flex justify-between items-center bg-white p-5 rounded-[2rem] border border-slate-200 shadow-sm">
-                                <span id="editing-file" class="text-xs font-mono font-bold text-blue-500"></span>
-                                <button onclick="saveFile()" class="bg-blue-600 text-white px-10 py-3 rounded-2xl font-black text-xs shadow-lg shadow-blue-200 active:scale-95 transition">SAVE TO CLOUD</button>
-                            </div>
-                            <textarea id="code-editor" class="w-full h-[60vh] p-10 editor-container rounded-[3rem] shadow-inner focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all" spellcheck="false"></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="visual-console" class="fixed bottom-0 left-0 w-full h-32 overflow-y-auto p-5 z-[9999]">
-        <div id="console-logs" class="space-y-1">Midnight Frost System Online...</div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, set, push, onValue, update, get, query, orderByChild, equalTo, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBn6vVKvPf74V7UUsWWnTI9uRh5FI_urK0",
-            authDomain: "rzones-c08ee.firebaseapp.com",
-            databaseURL: "https://rzones-c08ee-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "rzones-c08ee",
-            storageBucket: "rzones-c08ee.firebasestorage.app",
-            messagingSenderId: "411533215268",
-            appId: "1:411533215268:web:238dbba66bef4907f0fab1"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        const vlog = (m, t = 'info') => {
-            const c = t === 'error' ? 'text-red-400' : (t === 'success' ? 'text-emerald-400' : 'text-blue-400');
-            const logBox = document.getElementById('console-logs');
-            if(logBox) logBox.innerHTML = `<div><span class="${c}">[${new Date().toLocaleTimeString()}]</span> ${m}</div>` + logBox.innerHTML;
-        };
-
-        const host = window.location.hostname;
-        const isMain = host === "rzone.web.id" || host === "www.rzone.web.id" || host.includes("vercel.app") || host.includes("localhost");
-
-        // --- BOOT SYSTEM ---
-        window.onload = async () => {
-            if (!isMain) {
-                // Mode Renderer
-                const sub = host.split('.')[0];
-                await resolveProject(sub);
-            } else {
-                // Mode Dashboard
-                document.getElementById('system-resolver').classList.add('hidden');
-                document.getElementById('dashboard-root').classList.remove('hidden');
-            }
-        };
-
-        // --- RESOLVER (Traffic & 404 Fix) ---
-        async function resolveProject(sub) {
-            try {
-                const q = query(ref(db, 'repositories'), orderByChild('name'), equalTo(sub));
-                const snap = await get(q);
-                
-                if (snap.exists()) {
-                    const id = Object.keys(snap.val())[0];
-                    const data = snap.val()[id];
-                    
-                    // Increment Traffic
-                    await update(ref(db, `repositories/${id}`), { traffic: (data.traffic || 0) + 1 });
-                    
-                    const files = data.files || {};
-                    const index = Object.values(files).find(f => f.name === 'index.html');
-                    
-                    if (index) {
-                        document.open();
-                        document.write(index.content);
-                        document.close();
-                    } else {
-                        trigger404(sub);
-                    }
-                } else {
-                    trigger404(sub);
-                }
-            } catch(e) { trigger404(sub); }
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 1.43;
+        document.getElementById('p').style.width = Math.min(progress, 100) + "%";
+        if (progress >= 100) {
+            clearInterval(interval);
+            if (isRateLimited()) {
+                showCaptcha();
+            } else { finish(); }
         }
+    }, 100);
 
-        function trigger404(sub) {
-            document.getElementById('loading-box').classList.add('hidden');
-            document.getElementById('error-404').classList.remove('hidden');
-            document.getElementById('bad-sub').innerText = sub + ".rzone.web.id";
-        }
+    function showCaptcha() {
+        document.getElementById('msg').innerText = "HUMAN CHECK";
+        document.getElementById('captcha').style.display = 'block';
+        window.n1 = Math.floor(Math.random() * 10) + 1;
+        window.n2 = Math.floor(Math.random() * 10) + 1;
+        document.getElementById('q').innerText = `${n1} + ${n2} = ?`;
+    }
 
-        // --- ADMIN ACTIONS ---
-        window.handleLogin = () => {
-            if(document.getElementById('pin').value === "190713") {
-                document.getElementById('visual-console').style.display = 'block';
-                document.getElementById('login-ui').classList.add('hidden');
-                document.getElementById('main-ui').classList.remove('hidden');
-                loadRepos();
-                vlog("Security Cleared. Welcome GoR 1.1", "success");
-            } else { vlog("Unauthorized access attempt", "error"); alert("WRONG PIN!"); }
-        };
+    function check() {
+        const val = parseInt(document.getElementById('ans').value);
+        if (val === (window.n1 + window.n2)) finish();
+        else { alert("Wrong!"); showCaptcha(); }
+    }
 
-        let currentId = null;
-        let currentFile = null;
+    function finish() {
+        // Simpan log keberhasilan
+        let logs = JSON.parse(localStorage.getItem('rtys_global_logs') || "[]");
+        logs.push(Date.now());
+        localStorage.setItem('rtys_global_logs', JSON.stringify(logs));
 
-        function loadRepos() {
-            onValue(ref(db, 'repositories'), (snap) => {
-                const container = document.getElementById('project-list');
-                container.innerHTML = '';
-                if(snap.exists()) {
-                    const data = snap.val();
-                    document.getElementById('proj-count').innerText = Object.keys(data).length;
-                    Object.entries(data).forEach(([id, repo]) => {
-                        container.innerHTML += `
-                            <div class="glass-card p-10 rounded-[3rem] border-2 border-transparent hover:border-blue-500 transition-all cursor-pointer group" onclick="openRepo('${id}', '${repo.name}')">
-                                <div class="flex justify-between items-start mb-8">
-                                    <div class="w-16 h-16 bg-navy text-white rounded-3xl flex items-center justify-center font-black text-2xl group-hover:bg-blue-600 transition">${repo.name[0].toUpperCase()}</div>
-                                    <div class="text-right">
-                                        <p class="text-[9px] font-black text-slate-400 uppercase">Visits</p>
-                                        <p class="text-2xl font-black text-navy italic">${repo.traffic || 0}</p>
-                                    </div>
-                                </div>
-                                <h3 class="text-3xl font-black text-navy tracking-tighter uppercase italic">${repo.name}</h3>
-                                <p class="text-xs font-mono text-blue-500 mt-2 font-bold">${repo.name}.rzone.web.id</p>
-                            </div>
-                        `;
-                    });
-                }
-            });
-        }
-
-        window.openRepo = async (id, name) => {
-            currentId = id;
-            const snap = await get(ref(db, `repositories/${id}`));
-            const data = snap.val();
-            
-            document.getElementById('main-ui').classList.add('hidden');
-            document.getElementById('editor-ui').classList.remove('hidden');
-            document.getElementById('active-repo-name').innerText = name;
-            document.getElementById('active-repo-url').innerText = `${name}.rzone.web.id`;
-            document.getElementById('repo-traffic').innerText = data.traffic || 0;
-            document.getElementById('btn-live').onclick = () => window.open(`http://${name}.rzone.web.id`, '_blank');
-            
-            onValue(ref(db, `repositories/${id}/files`), (fSnap) => {
-                const sidebar = document.getElementById('file-sidebar');
-                sidebar.innerHTML = '';
-                if(fSnap.exists()) {
-                    Object.entries(fSnap.val()).forEach(([fid, file]) => {
-                        sidebar.innerHTML += `
-                            <div class="flex items-center justify-between p-5 bg-slate-50 rounded-3xl cursor-pointer hover:bg-blue-50" onclick="loadText('${fid}', '${file.name}', \`${b64(file.content)}\`)">
-                                <span class="text-xs font-black text-navy uppercase italic">📄 ${file.name}</span>
-                                <button onclick="event.stopPropagation(); deleteFile('${fid}')" class="text-red-400 font-black">×</button>
-                            </div>
-                        `;
-                    });
-                }
-            });
-        };
-
-        window.triggerFilePicker = () => document.getElementById('file-picker').click();
-        document.getElementById('file-picker').onchange = (e) => {
-            const f = e.target.files[0];
-            if(f && f.name === "index.html") {
-                const r = new FileReader();
-                r.onload = async (ev) => {
-                    vlog("Syncing index.html...", "info");
-                    await push(ref(db, `repositories/${currentId}/files`), { name: "index.html", content: ev.target.result });
-                    vlog("Deployment success", "success");
-                };
-                r.readAsText(f);
-            } else { alert("File must be index.html"); }
-        };
-
-        window.loadText = (fid, name, b) => {
-            currentFile = fid;
-            document.getElementById('editor-area').classList.remove('hidden');
-            document.getElementById('editing-file').innerText = name.toUpperCase();
-            document.getElementById('code-editor').value = b64_dec(b);
-        };
-
-        window.saveFile = async () => {
-            vlog("Pushing updates...", "info");
-            await update(ref(db, `repositories/${currentId}/files/${currentFile}`), { content: document.getElementById('code-editor').value });
-            vlog("Cloud updated", "success");
-            alert("SAVED!");
-        };
-
-        window.createProject = async () => {
-            const n = prompt("Project ID:");
-            if(n) {
-                const c = n.toLowerCase().replace(/\s/g, '-');
-                await set(push(ref(db, 'repositories')), { name: c, traffic: 0 });
-                vlog("Created project " + c, "success");
-            }
-        };
-
-        window.deleteRepo = async () => {
-            if(confirm("DESTROY THIS REPO?")) {
-                await remove(ref(db, `repositories/${currentId}`));
-                location.reload();
-            }
-        };
-
-        window.deleteFile = async (fid) => {
-            if(confirm("DEL FILE?")) await remove(ref(db, `repositories/${currentId}/files/${fid}`));
-        };
-
-        function b64(s) { return btoa(unescape(encodeURIComponent(s))); }
-        function b64_dec(s) { return decodeURIComponent(escape(atob(s))); }
-    </script>
+        // Kirim balik ke website asal dengan status sukses
+        const returnUrl = new URL(targetUrl);
+        returnUrl.searchParams.set('rtys_status', 'verified');
+        window.location.href = returnUrl.toString();
+    }
+</script>
 </body>
 </html>
