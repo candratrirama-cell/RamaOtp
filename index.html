@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donasi @maramadhona - Premium UI</title>
+    <title>Donasi GoR 1.1 - Liquid Glass</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -11,174 +11,179 @@
     
     <style>
         :root { 
-            --primary-blue: #0061ff; 
-            --secondary-blue: #60efff;
-            --glass: rgba(255, 255, 255, 0.9);
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --liquid-blue: #00d2ff;
+            --liquid-purple: #9d50bb;
         }
         
         body { 
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow-x: hidden;
+            margin: 0;
+            padding: 20px;
         }
 
-        .donation-card { 
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .liquid-card { 
             max-width: 450px; 
             width: 100%;
-            border: none; 
-            border-radius: 30px; 
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); 
-            background: var(--glass);
-            backdrop-filter: blur(10px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px; 
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             overflow: hidden;
-            transition: transform 0.3s ease;
+            color: white;
         }
 
-        .card-header-blue { 
-            background: linear-gradient(45deg, var(--primary-blue), var(--secondary-blue)); 
-            color: white; 
+        .liquid-header { 
             padding: 40px 20px; 
-            text-align: center; 
-            border-radius: 0 0 50px 50px;
-            box-shadow: 0 10px 20px rgba(0,97,255,0.2);
+            text-align: center;
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         #qrcode { 
-            margin: auto; 
-            padding: 20px; 
+            padding: 15px; 
             background: white; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-radius: 25px; 
+            box-shadow: 0 0 20px rgba(255,255,255,0.4);
             display: inline-block;
+            transition: transform 0.3s ease;
         }
+
+        #qrcode:hover { transform: scale(1.05) rotate(2deg); }
 
         .amount-display { 
-            font-size: 2.5rem; 
-            font-weight: 800; 
-            background: -webkit-linear-gradient(var(--primary-blue), var(--secondary-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 2.8rem; 
+            font-weight: 900; 
+            color: #fff;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        .btn-donate { 
-            background: linear-gradient(45deg, var(--primary-blue), var(--secondary-blue));
-            border: none; 
-            border-radius: 15px; 
-            padding: 16px; 
+        .btn-liquid { 
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            border-radius: 20px; 
+            padding: 18px; 
             font-weight: 700; 
-            letter-spacing: 1px;
-            transition: all 0.4s ease;
             color: white;
-            box-shadow: 0 8px 15px rgba(0,97,255,0.3);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        .btn-donate:hover { 
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 15px 20px rgba(0,97,255,0.4);
+        .btn-liquid:hover { 
+            background: white;
+            color: #23a6d5;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .info-box {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .status-pill {
+            background: rgba(255, 255, 255, 0.9);
+            color: #ff3e00;
+            padding: 5px 20px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 12px;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        input.form-control {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--glass-border);
             color: white;
+            border-radius: 15px;
+            font-weight: bold;
         }
 
-        .status-badge { 
-            display: inline-block; 
-            padding: 10px 20px; 
-            border-radius: 50px; 
-            font-size: 11px; 
-            font-weight: 800; 
-            letter-spacing: 1px;
+        input.form-control:focus {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            box-shadow: none;
+            border-color: #fff;
         }
 
-        .status-waiting { 
-            background: #fff9e6; 
-            color: #d4a017; 
-            border: 1px solid #ffeeba;
-            animation: pulseCustom 2s infinite; 
-        }
-
-        @keyframes pulseCustom {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .success-icon {
-            font-size: 100px;
-            display: block;
-            margin-bottom: 20px;
-            animation: bounceIn 1s;
-        }
-
-        /* Float Animation for elements */
-        .float-anim { animation: float 3s ease-in-out infinite; }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
+        ::placeholder { color: rgba(255, 255, 255, 0.7); }
     </style>
 </head>
 <body>
 
-<div class="container py-5 d-flex justify-content-center">
-    <div class="card donation-card animate__animated animate__fadeInUp">
-        <div class="card-header-blue">
-            <h2 class="fw-bold m-0 animate__animated animate__delay-1s animate__fadeInDown">GoR 1.1 Donasi</h2>
-            <p class="m-0 mt-2 opacity-90 fw-light">Support Creative Work @maramadhona</p>
+<div class="liquid-card animate__animated animate__zoomIn">
+    <div class="liquid-header">
+        <h2 class="fw-bold m-0">GoR 1.1</h2>
+        <p class="m-0 opacity-75 mt-1 small text-uppercase fw-bold">Premium Donation Portal</p>
+    </div>
+    
+    <div class="card-body p-4">
+        <div id="input-area">
+            <div class="mb-4">
+                <label class="form-label small fw-bold text-uppercase opacity-75">Nominal Donasi</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-0 text-white fw-bold">Rp</span>
+                    <input type="number" id="amount" class="form-control form-control-lg" value="5000" min="100">
+                </div>
+            </div>
+            <button onclick="generateDonasi()" id="btn-pay" class="btn w-100 btn-liquid">
+                PROSES PEMBAYARAN
+            </button>
         </div>
-        
-        <div class="card-body p-4 p-md-5">
-            <div id="input-area" class="animate__animated animate__fadeIn">
-                <div class="mb-4">
-                    <label class="form-label small fw-bold text-secondary text-uppercase mb-3">Masukkan Nominal</label>
-                    <div class="input-group input-group-lg shadow-sm rounded-4 overflow-hidden">
-                        <span class="input-group-text bg-white border-0 fw-bold text-primary">Rp</span>
-                        <input type="number" id="amount" class="form-control border-0 fw-bold" value="5000" min="100">
-                    </div>
-                </div>
-                <button onclick="generateDonasi()" id="btn-pay" class="btn w-100 btn-donate fs-5">
-                    GENERATE QRIS SEKARANG
-                </button>
-            </div>
 
-            <div id="loading" class="text-center mt-3 d-none animate__animated animate__fadeIn">
-                <div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
-                <p class="mt-3 text-muted fw-bold">Generating Secure QRIS...</p>
-            </div>
+        <div id="loading" class="text-center mt-3 d-none">
+            <div class="spinner-border text-light" role="status"></div>
+            <p class="mt-2 fw-bold">Membangun Koneksi Aman...</p>
+        </div>
 
-            <div id="qris-result" class="text-center d-none animate__animated animate__zoomIn">
-                <div class="status-badge status-waiting mb-4 text-uppercase">Scanning System Active</div>
-                <p class="mb-1 text-muted small fw-bold">TOTAL PEMBAYARAN</p>
-                <p class="amount-display mb-4">Rp <span id="final-amount"></span></p>
-                
-                <div class="float-anim">
-                    <div id="qrcode" class="mb-4"></div>
+        <div id="qris-result" class="text-center d-none animate__animated animate__fadeIn">
+            <div class="status-pill mb-4 animate__animated animate__pulse animate__infinite">WAITING PAYMENT</div>
+            <p class="mb-0 opacity-75 small fw-bold">TOTAL TAGIHAN</p>
+            <p class="amount-display mb-4">Rp <span id="final-amount"></span></p>
+            
+            <div id="qrcode" class="mb-4"></div>
+            
+            <div class="info-box text-start mb-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="opacity-75 small">ID Transaksi:</span>
+                    <span id="ref-id" class="fw-bold"></span>
                 </div>
-                
-                <div class="bg-white p-3 rounded-4 shadow-sm text-start border mb-4">
-                    <div class="d-flex justify-content-between small mb-2">
-                        <span class="text-muted">Invoice ID</span>
-                        <span id="ref-id" class="fw-bold text-dark"></span>
-                    </div>
-                    <div class="d-flex justify-content-between small">
-                        <span class="text-muted">Merchant</span>
-                        <span class="fw-bold text-primary">MARA-STORE</span>
-                    </div>
+                <div class="d-flex justify-content-between">
+                    <span class="opacity-75 small">Metode:</span>
+                    <span class="fw-bold">QRIS ALL PAYMENT</span>
                 </div>
-                <div class="progress mb-2" style="height: 6px;">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
-                </div>
-                <p class="text-muted" style="font-size: 11px;">Jangan tutup halaman ini sebelum pembayaran selesai.</p>
             </div>
+            <div class="progress bg-transparent border border-white border-opacity-25" style="height: 5px;">
+                <div class="progress-bar bg-white progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+            </div>
+        </div>
 
-            <div id="success-area" class="text-center d-none py-4 animate__animated animate__bounceIn">
-                <div class="success-icon">🎉</div>
-                <h2 class="fw-bold text-success mb-2">SUCCESS!</h2>
-                <p class="text-muted mb-4">Terima kasih banyak atas donasi Anda untuk <strong>@maramadhona</strong>. Dukungan Anda sangat berarti!</p>
-                <button onclick="location.reload()" class="btn btn-primary rounded-pill px-5 py-2 shadow">Kirim Donasi Lagi</button>
-            </div>
+        <div id="success-area" class="text-center d-none py-5 animate__animated animate__bounceIn">
+            <div style="font-size: 80px;" class="mb-3">💎</div>
+            <h2 class="fw-bold">SUKSES!</h2>
+            <p class="opacity-75">Terima kasih atas kontribusi Anda.</p>
+            <button onclick="location.reload()" class="btn btn-light rounded-pill px-4 mt-3 fw-bold">KEMBALI</button>
         </div>
     </div>
 </div>
@@ -188,23 +193,18 @@ const API_KEY = "91b24c8aeb3d364a80742a847797553b";
 const BASE_URL = "https://hokto.my.id/produksi/payment/";
 let checkTimer;
 
-// Efek Kembang Api / Confetti
+// Fungsi Format ID sesuai permintaan: DON(bulan)(tgl)(jam)
+function generateCustomID() {
+    const now = new Date();
+    const bulan = String(now.getMonth() + 1).padStart(2, '0');
+    const tgl = String(now.getDate()).padStart(2, '0');
+    const jam = String(now.getHours()).padStart(2, '0');
+    const random = Math.floor(Math.random() * 100); // Tambahan random kecil agar unik jika di jam yang sama
+    return `DON${bulan}${tgl}${jam}${random}`;
+}
+
 function launchFireworks() {
-    var duration = 5 * 1000;
-    var animationEnd = Date.now() + duration;
-    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-    function randomInRange(min, max) {
-        return Math.random() * (max - min) + min;
-    }
-
-    var interval = setInterval(function() {
-        var timeLeft = animationEnd - Date.now();
-        if (timeLeft <= 0) return clearInterval(interval);
-        var particleCount = 50 * (timeLeft / duration);
-        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-    }, 250);
+    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, zIndex: 999 });
 }
 
 function formatRupiah(angka) {
@@ -224,9 +224,9 @@ async function generateDonasi() {
     qrDiv.innerHTML = "";
     loading.classList.remove('d-none');
     inputArea.classList.add('d-none');
-    btn.disabled = true;
 
-    const uniqueInvoice = "MARA-" + Date.now();
+    // MENGGUNAKAN FORMAT ID SESUAI PERMINTAAN
+    const uniqueInvoice = generateCustomID();
 
     try {
         const response = await fetch(`${BASE_URL}?api=create_qris`, {
@@ -238,12 +238,11 @@ async function generateDonasi() {
         const data = await response.json();
         
         if (data.status === "success" && (data.qrContent || data.qrString)) {
-            const qrText = data.qrContent || data.qrString;
             document.getElementById('final-amount').innerText = formatRupiah(amount);
             document.getElementById('ref-id').innerText = uniqueInvoice;
 
             new QRCode(qrDiv, {
-                text: qrText,
+                text: data.qrContent || data.qrString,
                 width: 220,
                 height: 220,
                 colorDark : "#000000",
@@ -255,15 +254,14 @@ async function generateDonasi() {
             resultArea.classList.remove('d-none');
             mulaiCekPembayaran(uniqueInvoice);
         } else {
-            alert("Gagal membuat QRIS. " + (data.message || ""));
+            alert("Gagal memproses.");
             inputArea.classList.remove('d-none');
         }
     } catch (error) {
-        alert("Koneksi gagal!");
+        alert("Gangguan Koneksi!");
         inputArea.classList.remove('d-none');
     } finally {
         loading.classList.add('d-none');
-        btn.disabled = false;
     }
 }
 
@@ -279,10 +277,10 @@ function mulaiCekPembayaran(ref) {
                 clearInterval(checkTimer);
                 document.getElementById('qris-result').classList.add('d-none');
                 document.getElementById('success-area').classList.remove('d-none');
-                launchFireworks(); // Panggil fungsi kembang api
+                launchFireworks();
             }
         } catch (e) {
-            console.log("Menunggu dana masuk...");
+            console.log("Sync...");
         }
     }, 5000);
 }
