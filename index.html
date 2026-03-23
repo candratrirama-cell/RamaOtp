@@ -3,73 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>rtysafe - Gate</title>
+    <title>Donasi @maramadhona - Premium UI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
     <style>
-        :root { --accent: #00ff41; --bg: #000; }
-        body { background: var(--bg); color: #fff; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .box { border: 2px solid var(--accent); padding: 30px; text-align: center; box-shadow: 6px 6px 0px var(--accent); background: #111; width: 320px; }
-        .bar { height: 4px; width: 100%; background: #222; margin: 20px 0; position: relative; }
-        .prog { height: 100%; background: var(--accent); width: 0%; transition: width 0.1s linear; }
-        #captcha { display: none; margin-top: 15px; border-top: 1px dashed var(--accent); padding-top: 15px; }
-        input { background: none; border: 2px solid var(--accent); color: var(--accent); padding: 8px; width: 60px; text-align: center; font-size: 1.2rem; outline: none; margin-bottom: 10px; }
-        button { background: var(--accent); border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        :root { 
+            --primary-blue: #0061ff; 
+            --secondary-blue: #60efff;
+            --glass: rgba(255, 255, 255, 0.9);
+        }
+        
+        body { 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Poppins', sans-serif; 
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .donation-card { 
+            max-width: 450px; 
+            width: 100%;
+            border: none; 
+            border-radius: 30px; 
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); 
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .card-header-blue { 
+            background: linear-gradient(45deg, var(--primary-blue), var(--secondary-blue)); 
+            color: white; 
+            padding: 40px 20px; 
+            text-align: center; 
+            border-radius: 0 0 50px 50px;
+            box-shadow: 0 10px 20px rgba(0,97,255,0.2);
+        }
+
+        #qrcode { 
+            margin: auto; 
+            padding: 20px; 
+            background: white; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            display: inline-block;
+        }
+
+        .amount-display { 
+            font-size: 2.5rem; 
+            font-weight: 800; 
+            background: -webkit-linear-gradient(var(--primary-blue), var(--secondary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-donate { 
+            background: linear-gradient(45deg, var(--primary-blue), var(--secondary-blue));
+            border: none; 
+            border-radius: 15px; 
+            padding: 16px; 
+            font-weight: 700; 
+            letter-spacing: 1px;
+            transition: all 0.4s ease;
+            color: white;
+            box-shadow: 0 8px 15px rgba(0,97,255,0.3);
+        }
+
+        .btn-donate:hover { 
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 20px rgba(0,97,255,0.4);
+            color: white;
+        }
+
+        .status-badge { 
+            display: inline-block; 
+            padding: 10px 20px; 
+            border-radius: 50px; 
+            font-size: 11px; 
+            font-weight: 800; 
+            letter-spacing: 1px;
+        }
+
+        .status-waiting { 
+            background: #fff9e6; 
+            color: #d4a017; 
+            border: 1px solid #ffeeba;
+            animation: pulseCustom 2s infinite; 
+        }
+
+        @keyframes pulseCustom {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .success-icon {
+            font-size: 100px;
+            display: block;
+            margin-bottom: 20px;
+            animation: bounceIn 1s;
+        }
+
+        /* Float Animation for elements */
+        .float-anim { animation: float 3s ease-in-out infinite; }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2 id="msg">rtysafe CHECKING</h2>
-        <div class="bar"><div id="p" class="prog"></div></div>
-        <div id="captcha">
-            <p id="q" style="font-size: 1.2rem; margin-bottom: 10px;"></p>
-            <input type="number" id="ans">
-            <br><button onclick="check()">Verify</button>
+
+<div class="container py-5 d-flex justify-content-center">
+    <div class="card donation-card animate__animated animate__fadeInUp">
+        <div class="card-header-blue">
+            <h2 class="fw-bold m-0 animate__animated animate__delay-1s animate__fadeInDown">GoR 1.1 Donasi</h2>
+            <p class="m-0 mt-2 opacity-90 fw-light">Support Creative Work @maramadhona</p>
+        </div>
+        
+        <div class="card-body p-4 p-md-5">
+            <div id="input-area" class="animate__animated animate__fadeIn">
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-secondary text-uppercase mb-3">Masukkan Nominal</label>
+                    <div class="input-group input-group-lg shadow-sm rounded-4 overflow-hidden">
+                        <span class="input-group-text bg-white border-0 fw-bold text-primary">Rp</span>
+                        <input type="number" id="amount" class="form-control border-0 fw-bold" value="5000" min="100">
+                    </div>
+                </div>
+                <button onclick="generateDonasi()" id="btn-pay" class="btn w-100 btn-donate fs-5">
+                    GENERATE QRIS SEKARANG
+                </button>
+            </div>
+
+            <div id="loading" class="text-center mt-3 d-none animate__animated animate__fadeIn">
+                <div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+                <p class="mt-3 text-muted fw-bold">Generating Secure QRIS...</p>
+            </div>
+
+            <div id="qris-result" class="text-center d-none animate__animated animate__zoomIn">
+                <div class="status-badge status-waiting mb-4 text-uppercase">Scanning System Active</div>
+                <p class="mb-1 text-muted small fw-bold">TOTAL PEMBAYARAN</p>
+                <p class="amount-display mb-4">Rp <span id="final-amount"></span></p>
+                
+                <div class="float-anim">
+                    <div id="qrcode" class="mb-4"></div>
+                </div>
+                
+                <div class="bg-white p-3 rounded-4 shadow-sm text-start border mb-4">
+                    <div class="d-flex justify-content-between small mb-2">
+                        <span class="text-muted">Invoice ID</span>
+                        <span id="ref-id" class="fw-bold text-dark"></span>
+                    </div>
+                    <div class="d-flex justify-content-between small">
+                        <span class="text-muted">Merchant</span>
+                        <span class="fw-bold text-primary">MARA-STORE</span>
+                    </div>
+                </div>
+                <div class="progress mb-2" style="height: 6px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+                </div>
+                <p class="text-muted" style="font-size: 11px;">Jangan tutup halaman ini sebelum pembayaran selesai.</p>
+            </div>
+
+            <div id="success-area" class="text-center d-none py-4 animate__animated animate__bounceIn">
+                <div class="success-icon">🎉</div>
+                <h2 class="fw-bold text-success mb-2">SUCCESS!</h2>
+                <p class="text-muted mb-4">Terima kasih banyak atas donasi Anda untuk <strong>@maramadhona</strong>. Dukungan Anda sangat berarti!</p>
+                <button onclick="location.reload()" class="btn btn-primary rounded-pill px-5 py-2 shadow">Kirim Donasi Lagi</button>
+            </div>
         </div>
     </div>
+</div>
 
 <script>
-    const params = new URLSearchParams(window.location.search);
-    const target = params.get('redirect');
+const API_KEY = "91b24c8aeb3d364a80742a847797553b";
+const BASE_URL = "https://hokto.my.id/produksi/payment/";
+let checkTimer;
 
-    function isRateLimited() {
-        const now = Date.now();
-        let logs = JSON.parse(localStorage.getItem('rtys_logs') || "[]");
-        logs = logs.filter(t => (now - t) < 60000);
-        localStorage.setItem('rtys_logs', JSON.stringify(logs));
-        return logs.length >= 7;
+// Efek Kembang Api / Confetti
+function launchFireworks() {
+    var duration = 5 * 1000;
+    var animationEnd = Date.now() + duration;
+    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
     }
 
-    let progress = 0;
-    const inv = setInterval(() => {
-        progress += 1.43; // Menuju 100% dalam 7 detik
-        document.getElementById('p').style.width = Math.min(progress, 100) + "%";
-        if (progress >= 100) {
-            clearInterval(inv);
-            if (isRateLimited()) {
-                document.getElementById('msg').innerText = "HIGH TRAFFIC";
-                document.getElementById('captcha').style.display = 'block';
-                window.n1 = Math.floor(Math.random()*9)+1;
-                window.n2 = Math.floor(Math.random()*9)+1;
-                document.getElementById('q').innerText = `${n1} + ${n2} = ?`;
-            } else { finish(); }
+    var interval = setInterval(function() {
+        var timeLeft = animationEnd - Date.now();
+        if (timeLeft <= 0) return clearInterval(interval);
+        var particleCount = 50 * (timeLeft / duration);
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+    }, 250);
+}
+
+function formatRupiah(angka) {
+    return new Intl.NumberFormat('id-ID').format(angka);
+}
+
+async function generateDonasi() {
+    const amount = document.getElementById('amount').value;
+    const btn = document.getElementById('btn-pay');
+    const loading = document.getElementById('loading');
+    const inputArea = document.getElementById('input-area');
+    const resultArea = document.getElementById('qris-result');
+    const qrDiv = document.getElementById('qrcode');
+    
+    if (amount < 100) { return alert("Minimal donasi Rp 100"); }
+
+    qrDiv.innerHTML = "";
+    loading.classList.remove('d-none');
+    inputArea.classList.add('d-none');
+    btn.disabled = true;
+
+    const uniqueInvoice = "MARA-" + Date.now();
+
+    try {
+        const response = await fetch(`${BASE_URL}?api=create_qris`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-API-KEY': API_KEY },
+            body: JSON.stringify({ amount: parseInt(amount), partnerReferenceNo: uniqueInvoice })
+        });
+
+        const data = await response.json();
+        
+        if (data.status === "success" && (data.qrContent || data.qrString)) {
+            const qrText = data.qrContent || data.qrString;
+            document.getElementById('final-amount').innerText = formatRupiah(amount);
+            document.getElementById('ref-id').innerText = uniqueInvoice;
+
+            new QRCode(qrDiv, {
+                text: qrText,
+                width: 220,
+                height: 220,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.M
+            });
+
+            loading.classList.add('d-none');
+            resultArea.classList.remove('d-none');
+            mulaiCekPembayaran(uniqueInvoice);
+        } else {
+            alert("Gagal membuat QRIS. " + (data.message || ""));
+            inputArea.classList.remove('d-none');
         }
-    }, 100);
-
-    function check() {
-        if (parseInt(document.getElementById('ans').value) === (window.n1 + window.n2)) finish();
-        else { alert("Salah!"); location.reload(); }
+    } catch (error) {
+        alert("Koneksi gagal!");
+        inputArea.classList.remove('d-none');
+    } finally {
+        loading.classList.add('d-none');
+        btn.disabled = false;
     }
+}
 
-    function finish() {
-        let logs = JSON.parse(localStorage.getItem('rtys_logs') || "[]");
-        logs.push(Date.now());
-        localStorage.setItem('rtys_logs', JSON.stringify(logs));
+function mulaiCekPembayaran(ref) {
+    checkTimer = setInterval(async () => {
+        try {
+            const response = await fetch(`${BASE_URL}?api=check_status&partnerReferenceNo=${ref}`, {
+                headers: { 'X-API-KEY': API_KEY }
+            });
+            const data = await response.json();
 
-        if (target) {
-            const dest = new URL(decodeURIComponent(target));
-            dest.searchParams.set('rtys_auth', 'success');
-            window.location.href = dest.toString();
+            if (data.status === "PAID" || (data.data && data.data.status === "PAID")) {
+                clearInterval(checkTimer);
+                document.getElementById('qris-result').classList.add('d-none');
+                document.getElementById('success-area').classList.remove('d-none');
+                launchFireworks(); // Panggil fungsi kembang api
+            }
+        } catch (e) {
+            console.log("Menunggu dana masuk...");
         }
-    }
+    }, 5000);
+}
 </script>
+
 </body>
 </html>
