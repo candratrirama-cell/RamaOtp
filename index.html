@@ -3,287 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donasi GoR 1.1 - Liquid Glass</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
-    <style>
-        :root { 
-            --glass-bg: rgba(255, 255, 255, 0.15);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --liquid-blue: #00d2ff;
-            --liquid-purple: #9d50bb;
-        }
-        
-        body { 
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-            padding: 20px;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .liquid-card { 
-            max-width: 450px; 
-            width: 100%;
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border: 1px solid var(--glass-border);
-            border-radius: 40px; 
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            overflow: hidden;
-            color: white;
-        }
-
-        .liquid-header { 
-            padding: 40px 20px; 
-            text-align: center;
-            border-bottom: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        #qrcode { 
-            padding: 15px; 
-            background: white; 
-            border-radius: 25px; 
-            box-shadow: 0 0 20px rgba(255,255,255,0.4);
-            display: inline-block;
-            transition: transform 0.3s ease;
-        }
-
-        #qrcode:hover { transform: scale(1.05) rotate(2deg); }
-
-        .amount-display { 
-            font-size: 2.8rem; 
-            font-weight: 900; 
-            color: #fff;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        .btn-liquid { 
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            border-radius: 20px; 
-            padding: 18px; 
-            font-weight: 700; 
-            color: white;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .btn-liquid:hover { 
-            background: white;
-            color: #23a6d5;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        .info-box {
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 20px;
-            padding: 15px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .status-pill {
-            background: rgba(255, 255, 255, 0.9);
-            color: #ff3e00;
-            padding: 5px 20px;
-            border-radius: 50px;
-            font-weight: 800;
-            font-size: 12px;
-            display: inline-block;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        input.form-control {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid var(--glass-border);
-            color: white;
-            border-radius: 15px;
-            font-weight: bold;
-        }
-
-        input.form-control:focus {
-            background: rgba(255, 255, 255, 0.3);
-            color: white;
-            box-shadow: none;
-            border-color: #fff;
-        }
-
-        ::placeholder { color: rgba(255, 255, 255, 0.7); }
-    </style>
+    <title>Donasi RZONE & @maramadhona</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
 
-<div class="liquid-card animate__animated animate__zoomIn">
-    <div class="liquid-header">
-        <h2 class="fw-bold m-0">GoR 1.1</h2>
-        <p class="m-0 opacity-75 mt-1 small text-uppercase fw-bold">Premium Donation Portal</p>
+<div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-gray-700">
+    <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-blue-400">RZONE DONATION</h1>
+        <p class="text-gray-400 text-sm">Support @maramadhona</p>
     </div>
-    
-    <div class="card-body p-4">
-        <div id="input-area">
-            <div class="mb-4">
-                <label class="form-label small fw-bold text-uppercase opacity-75">Nominal Donasi</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-transparent border-0 text-white fw-bold">Rp</span>
-                    <input type="number" id="amount" class="form-control form-control-lg" value="5000" min="100">
-                </div>
-            </div>
-            <button onclick="generateDonasi()" id="btn-pay" class="btn w-100 btn-liquid">
-                PROSES PEMBAYARAN
-            </button>
-        </div>
 
-        <div id="loading" class="text-center mt-3 d-none">
-            <div class="spinner-border text-light" role="status"></div>
-            <p class="mt-2 fw-bold">Membangun Koneksi Aman...</p>
-        </div>
+    <div id="input-section">
+        <label class="block text-sm mb-2 text-gray-300">Nominal Donasi (Min. 100)</label>
+        <input type="number" id="amount" class="w-full p-3 bg-gray-700 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4" placeholder="Contoh: 10000">
+        <button onclick="pay()" id="btn-pay" class="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded-lg font-bold transition">Generate QRIS</button>
+    </div>
 
-        <div id="qris-result" class="text-center d-none animate__animated animate__fadeIn">
-            <div class="status-pill mb-4 animate__animated animate__pulse animate__infinite">WAITING PAYMENT</div>
-            <p class="mb-0 opacity-75 small fw-bold">TOTAL TAGIHAN</p>
-            <p class="amount-display mb-4">Rp <span id="final-amount"></span></p>
-            
-            <div id="qrcode" class="mb-4"></div>
-            
-            <div class="info-box text-start mb-4">
-                <div class="d-flex justify-content-between mb-2">
-                    <span class="opacity-75 small">ID Transaksi:</span>
-                    <span id="ref-id" class="fw-bold"></span>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <span class="opacity-75 small">Metode:</span>
-                    <span class="fw-bold">QRIS ALL PAYMENT</span>
-                </div>
-            </div>
-            <div class="progress bg-transparent border border-white border-opacity-25" style="height: 5px;">
-                <div class="progress-bar bg-white progress-bar-striped progress-bar-animated" style="width: 100%"></div>
-            </div>
+    <div id="qris-section" class="hidden text-center">
+        <div class="bg-white p-4 rounded-xl inline-block mb-4">
+            <img id="qris-image" src="" alt="QRIS" class="w-64 h-64">
         </div>
-
-        <div id="success-area" class="text-center d-none py-5 animate__animated animate__bounceIn">
-            <div style="font-size: 80px;" class="mb-3">💎</div>
-            <h2 class="fw-bold">SUKSES!</h2>
-            <p class="opacity-75">Terima kasih atas kontribusi Anda.</p>
-            <button onclick="location.reload()" class="btn btn-light rounded-pill px-4 mt-3 fw-bold">KEMBALI</button>
-        </div>
+        <p class="text-sm text-yellow-400 mb-2">Total: <span id="total-pay"></span> (Inc. Admin Rp 100)</p>
+        <p class="text-xs text-gray-400">Status: <span id="payment-status" class="animate-pulse">Menunggu Pembayaran...</span></p>
     </div>
 </div>
 
 <script>
-const API_KEY = "91b24c8aeb3d364a80742a847797553b";
-const BASE_URL = "https://hokto.my.id/produksi/payment/";
-let checkTimer;
+    async function pay() {
+        const amount = document.getElementById('amount').value;
+        if (amount < 100) return alert("Minimal donasi Rp 100");
 
-// Fungsi Format ID sesuai permintaan: DON(bulan)(tgl)(jam)
-function generateCustomID() {
-    const now = new Date();
-    const bulan = String(now.getMonth() + 1).padStart(2, '0');
-    const tgl = String(now.getDate()).padStart(2, '0');
-    const jam = String(now.getHours()).padStart(2, '0');
-    const random = Math.floor(Math.random() * 100); // Tambahan random kecil agar unik jika di jam yang sama
-    return `DON${bulan}${tgl}${jam}${random}`;
-}
+        const btn = document.getElementById('btn-pay');
+        btn.innerText = "Memproses...";
+        btn.disabled = true;
 
-function launchFireworks() {
-    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, zIndex: 999 });
-}
-
-function formatRupiah(angka) {
-    return new Intl.NumberFormat('id-ID').format(angka);
-}
-
-async function generateDonasi() {
-    const amount = document.getElementById('amount').value;
-    const btn = document.getElementById('btn-pay');
-    const loading = document.getElementById('loading');
-    const inputArea = document.getElementById('input-area');
-    const resultArea = document.getElementById('qris-result');
-    const qrDiv = document.getElementById('qrcode');
-    
-    if (amount < 100) { return alert("Minimal donasi Rp 100"); }
-
-    qrDiv.innerHTML = "";
-    loading.classList.remove('d-none');
-    inputArea.classList.add('d-none');
-
-    // MENGGUNAKAN FORMAT ID SESUAI PERMINTAAN
-    const uniqueInvoice = generateCustomID();
-
-    try {
-        const response = await fetch(`${BASE_URL}?api=create_qris`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-API-KEY': API_KEY },
-            body: JSON.stringify({ amount: parseInt(amount), partnerReferenceNo: uniqueInvoice })
-        });
-
-        const data = await response.json();
-        
-        if (data.status === "success" && (data.qrContent || data.qrString)) {
-            document.getElementById('final-amount').innerText = formatRupiah(amount);
-            document.getElementById('ref-id').innerText = uniqueInvoice;
-
-            new QRCode(qrDiv, {
-                text: data.qrContent || data.qrString,
-                width: 220,
-                height: 220,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.M
-            });
-
-            loading.classList.add('d-none');
-            resultArea.classList.remove('d-none');
-            mulaiCekPembayaran(uniqueInvoice);
-        } else {
-            alert("Gagal memproses.");
-            inputArea.classList.remove('d-none');
-        }
-    } catch (error) {
-        alert("Gangguan Koneksi!");
-        inputArea.classList.remove('d-none');
-    } finally {
-        loading.classList.add('d-none');
-    }
-}
-
-function mulaiCekPembayaran(ref) {
-    checkTimer = setInterval(async () => {
         try {
-            const response = await fetch(`${BASE_URL}?api=check_status&partnerReferenceNo=${ref}`, {
-                headers: { 'X-API-KEY': API_KEY }
+            const res = await fetch('/api/donate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount })
             });
-            const data = await response.json();
+            const data = await res.json();
 
-            if (data.status === "PAID" || (data.data && data.data.status === "PAID")) {
-                clearInterval(checkTimer);
-                document.getElementById('qris-result').classList.add('d-none');
-                document.getElementById('success-area').classList.remove('d-none');
-                launchFireworks();
+            if (data.qrData) {
+                document.getElementById('input-section').classList.add('hidden');
+                document.getElementById('qris-section').classList.remove('hidden');
+                document.getElementById('qris-image').src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(data.qrData)}`;
+                document.getElementById('total-pay').innerText = `Rp ${parseInt(amount) + 100}`;
+                
+                // Mulai polling cek status
+                checkStatus(data.partnerReferenceNo);
             }
         } catch (e) {
-            console.log("Sync...");
+            alert("Terjadi kesalahan.");
+            btn.innerText = "Generate QRIS";
+            btn.disabled = false;
         }
-    }, 5000);
-}
+    }
+
+    function checkStatus(refNo) {
+        const interval = setInterval(async () => {
+            const res = await fetch('/api/check-status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ partnerReferenceNo: refNo })
+            });
+            const data = await res.json();
+
+            if (data.status === 'PAID' || data.status === 'SUCCESS') {
+                clearInterval(interval);
+                document.getElementById('payment-status').innerText = "PEMBAYARAN BERHASIL!";
+                document.getElementById('payment-status').classList.replace('text-gray-400', 'text-green-400');
+                alert("Terima kasih atas donasinya!");
+            }
+        }, 5000);
+    }
 </script>
 
 </body>
